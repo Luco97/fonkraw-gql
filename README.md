@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://cdn.discordapp.com/attachments/907296858970415144/1001666111827353650/stock-app-logo.png" title="fakin logo poco original" alt="logo de aplicacion" width="320">
+    <img src="https://cdn.discordapp.com/attachments/907296858970415144/1017983281414807552/1_nP2C50GK4_-ly_R_mq3juQ.png" title="fakin logo mientras" alt="logo de repuesto que me gusta" width="320">
 </p>
 <hr>
 
