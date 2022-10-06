@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 // Services
 import { RoleModelService } from './models/role/role.model.service';
@@ -8,8 +9,10 @@ import { GenreModelService } from './models/genre/genre-model.service';
 import { AuthorModelService } from './models/author/author-model.service';
 import { CommentModelService } from './models/comment/comment-model.service';
 import { LanguageModelService } from './models/language/language-model.service';
+import { EmailVerifyModelService } from './models/email-verify/email-verify-model.service';
 
 @Module({
+  imports: [TypeOrmModule.forRootAsync({})],
   providers: [
     RoleModelService,
     UserModelService,
@@ -18,6 +21,7 @@ import { LanguageModelService } from './models/language/language-model.service';
     AuthorModelService,
     CommentModelService,
     LanguageModelService,
+    EmailVerifyModelService,
   ],
   exports: [
     RoleModelService,
@@ -27,6 +31,7 @@ import { LanguageModelService } from './models/language/language-model.service';
     AuthorModelService,
     CommentModelService,
     LanguageModelService,
+    EmailVerifyModelService,
   ],
 })
 export class DatabaseModule {}
