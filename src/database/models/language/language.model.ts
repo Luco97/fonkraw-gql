@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+
+import { MangaModel } from '../manga/manga.model';
 
 @Entity()
 export class LanguageModel {
@@ -26,4 +28,7 @@ export class LanguageModel {
     nullable: true,
   })
   country_flag: string;
+
+  @OneToMany(() => MangaModel, (manga) => manga.language)
+  manga: MangaModel[];
 }
