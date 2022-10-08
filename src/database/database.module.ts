@@ -7,6 +7,7 @@ import { UserModelService } from './models/user/user-model.service';
 import { MangaModelService } from './models/manga/manga-model.service';
 import { GenreModelService } from './models/genre/genre-model.service';
 import { AuthorModelService } from './models/author/author-model.service';
+import { InviteModelService } from './models/invite/invite-model.service';
 import { CommentModelService } from './models/comment/comment-model.service';
 import { LanguageModelService } from './models/language/language-model.service';
 import { EmailVerifyModelService } from './models/email-verify/email-verify-model.service';
@@ -19,6 +20,7 @@ import { EmailVerifyModelService } from './models/email-verify/email-verify-mode
     MangaModelService,
     GenreModelService,
     AuthorModelService,
+    InviteModelService,
     CommentModelService,
     LanguageModelService,
     EmailVerifyModelService,
@@ -29,6 +31,7 @@ import { EmailVerifyModelService } from './models/email-verify/email-verify-mode
     MangaModelService,
     GenreModelService,
     AuthorModelService,
+    InviteModelService,
     CommentModelService,
     LanguageModelService,
     EmailVerifyModelService,
