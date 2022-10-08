@@ -13,9 +13,10 @@ import {
 } from 'typeorm';
 import { genSalt, hash } from 'bcrypt';
 
-import { EmailVerifyModel } from '../email-verify/email-verify.model';
 import { RoleModel } from '../role/role.model';
 import { MangaModel } from '../manga/manga.model';
+import { AuthorModel } from '../author/author.model';
+import { EmailVerifyModel } from '../email-verify/email-verify.model';
 
 @Entity()
 export class UserModel {
@@ -63,6 +64,10 @@ export class UserModel {
   @OneToOne(() => EmailVerifyModel)
   @JoinColumn()
   activation: EmailVerifyModel;
+
+  @OneToOne(() => AuthorModel, (author) => author.user, { nullable: true })
+  @JoinColumn()
+  author_profile: AuthorModel;
 
   @BeforeInsert()
   @BeforeUpdate()
