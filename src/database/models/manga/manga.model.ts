@@ -29,10 +29,11 @@ export class MangaModel {
 
   @DeleteDateColumn({ type: 'timestamp' }) deleted_at: Date;
 
-  @ManyToOne(() => LanguageModel)
+  @ManyToOne(() => LanguageModel, (language) => language.manga)
   language: LanguageModel;
 
-  @ManyToMany(() => AuthorModel)
+  @ManyToMany(() => AuthorModel, (author) => author.mangas)
+  @JoinTable()
   authors: AuthorModel[];
 
   @ManyToMany(() => GenreModel, (genre) => genre.mangas)
