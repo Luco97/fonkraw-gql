@@ -23,6 +23,8 @@ export class MangaModel {
 
   @Column({ type: 'int' }) pages: number;
 
+  @Column({ type: 'varchar' }) cover_url: string;
+
   @CreateDateColumn({ type: 'timestamp' }) created_at: Date;
 
   @UpdateDateColumn({ type: 'timestamp' }) updated_at: Date;
