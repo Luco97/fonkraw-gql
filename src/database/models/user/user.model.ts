@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   OneToOne,
+  JoinTable,
   ManyToOne,
   ManyToMany,
   JoinColumn,
@@ -56,6 +57,7 @@ export class UserModel {
   @ManyToMany(() => MangaModel, (manga) => manga.users, {
     nullable: true,
   })
+  @JoinTable()
   mangas: MangaModel[];
 
   @ManyToOne(() => RoleModel, (role) => role.users)
