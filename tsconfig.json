@@ -18,7 +18,8 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@database/models/*": ["src/database/models/*"]
+      "@database/models/*": ["src/database/models/*"],
+      "@shared/*": ["src/shared/*"]
     }
   }
 }
