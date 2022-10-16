@@ -2,6 +2,7 @@ import {
   Entity,
   Column,
   OneToOne,
+  OneToMany,
   ManyToMany,
   CreateDateColumn,
   UpdateDateColumn,
@@ -11,6 +12,7 @@ import {
 
 import { UserModel } from '../user/user.model';
 import { MangaModel } from '../manga/manga.model';
+import { InviteModel } from '../invite/invite.model';
 @Entity()
 export class AuthorModel {
   @PrimaryGeneratedColumn('increment') id: number;
@@ -24,6 +26,9 @@ export class AuthorModel {
   @UpdateDateColumn({ type: 'timestamp' }) update_at: Date;
 
   @DeleteDateColumn({ type: 'timestamp' }) delete_at: Date;
+
+  @OneToMany(() => InviteModel, (request) => request.to_author)
+  invites: InviteModel[];
 
   @OneToOne(() => UserModel, (user) => user.author_profile)
   user: UserModel;
