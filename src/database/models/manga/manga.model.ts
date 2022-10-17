@@ -25,6 +25,8 @@ export class MangaModel {
 
   @Column({ type: 'varchar' }) cover_url: string;
 
+  @Column({ type: 'boolean' }) active: boolean;
+
   @CreateDateColumn({ type: 'timestamp' }) created_at: Date;
 
   @UpdateDateColumn({ type: 'timestamp' }) updated_at: Date;
@@ -34,7 +36,7 @@ export class MangaModel {
   @ManyToOne(() => LanguageModel, (language) => language.manga)
   language: LanguageModel;
 
-  @ManyToMany(() => AuthorModel, (author) => author.mangas)
+  @ManyToMany(() => AuthorModel, (author) => author.mangas, { nullable: false })
   @JoinTable()
   authors: AuthorModel[];
 
