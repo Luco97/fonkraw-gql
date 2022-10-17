@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 // Models or Entities
 import { RoleModel } from './models/role/role.model';
@@ -26,7 +27,39 @@ import { EmailVerifyModelService } from './models/email-verify/email-verify-mode
 @Module({
   imports: [
     // DB config
-    TypeOrmModule.forRootAsync({}),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        schema: configService.get('DATABASE_SCHEMA'),
+        url: configService.get('DATABASE_URL'),
+        entities: [
+          RoleModel,
+          UserModel,
+          MangaModel,
+          GenreModel,
+          AuthorModel,
+          InviteModel,
+          CommentModel,
+          LanguageModel,
+          EmailVerifyModel,
+        ],
+        synchronize:
+          configService.get('NODE_ENV') != 'production' ? true : false,
+        autoLoadEntities: true,
+        logging: 'all',
+        extra:
+          configService.get('NODE_ENV') == 'production'
+            ? {
+                ssl: {
+                  sslmode: true,
+                  rejectUnauthorized: false,
+                },
+              }
+            : {},
+      }),
+    }),
     // repos
     TypeOrmModule.forFeature([
       RoleModel,
