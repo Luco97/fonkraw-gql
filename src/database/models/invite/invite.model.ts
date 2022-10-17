@@ -8,6 +8,8 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
+import { MangaModel } from '../manga/manga.model';
 import { AuthorModel } from '../author/author.model';
 
 @Entity()
@@ -23,15 +25,18 @@ export class InviteModel {
 
   @Column({ type: 'varchar', length: '300', nullable: true }) comment: string;
 
-  @CreateDateColumn({ type: 'timestamp' })
-  created_at: Date;
+  @CreateDateColumn({ type: 'timestamp' }) created_at: Date;
 
   @UpdateDateColumn({ type: 'timestamp' }) updated_at: Date;
 
-  @OneToOne(() => AuthorModel)
+  @OneToOne(() => AuthorModel, { nullable: false })
   @JoinColumn()
   from_author: AuthorModel;
 
-  @ManyToOne(() => AuthorModel)
+  @OneToOne(() => MangaModel, { nullable: false })
+  @JoinColumn()
+  manga: MangaModel;
+
+  @ManyToOne(() => AuthorModel, { nullable: false })
   to_author: AuthorModel;
 }
