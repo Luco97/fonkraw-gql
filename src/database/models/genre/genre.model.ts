@@ -8,7 +8,7 @@ export class GenreModel {
 
   @Column({ type: 'varchar' }) name: string;
 
-  @Column({ type: 'varchar' }) description: string;
+  @Column({ type: 'varchar', nullable: true }) description: string;
 
   @ManyToMany(() => MangaModel, (manga) => manga.genres)
   mangas: MangaModel[];
