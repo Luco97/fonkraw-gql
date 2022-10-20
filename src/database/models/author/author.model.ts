@@ -13,6 +13,7 @@ import {
 import { UserModel } from '../user/user.model';
 import { MangaModel } from '../manga/manga.model';
 import { InviteModel } from '../invite/invite.model';
+
 @Entity()
 export class AuthorModel {
   @PrimaryGeneratedColumn('increment') id: number;
