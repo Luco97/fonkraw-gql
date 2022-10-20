@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
+import { LoggerOptions } from 'typeorm';
+
 // Models or Entities
 import { RoleModel } from './models/role/role.model';
 import { UserModel } from './models/user/user.model';
@@ -14,15 +16,15 @@ import { LanguageModel } from './models/language/language.model';
 import { EmailVerifyModel } from './models/email-verify/email-verify.model';
 
 // Services
-import { RoleModelService } from './models/role/role.model.service';
-import { UserModelService } from './models/user/user-model.service';
-import { MangaModelService } from './models/manga/manga-model.service';
-import { GenreModelService } from './models/genre/genre-model.service';
-import { AuthorModelService } from './models/author/author-model.service';
-import { InviteModelService } from './models/invite/invite-model.service';
-import { CommentModelService } from './models/comment/comment-model.service';
-import { LanguageModelService } from './models/language/language-model.service';
-import { EmailVerifyModelService } from './models/email-verify/email-verify-model.service';
+// import { RoleModelService } from './models/role/role.model.service';
+// import { UserModelService } from './models/user/user-model.service';
+// import { MangaModelService } from './models/manga/manga-model.service';
+// import { GenreModelService } from './models/genre/genre-model.service';
+// import { AuthorModelService } from './models/author/author-model.service';
+// import { InviteModelService } from './models/invite/invite-model.service';
+// import { CommentModelService } from './models/comment/comment-model.service';
+// import { LanguageModelService } from './models/language/language-model.service';
+// import { EmailVerifyModelService } from './models/email-verify/email-verify-model.service';
 
 @Module({
   imports: [
@@ -48,7 +50,7 @@ import { EmailVerifyModelService } from './models/email-verify/email-verify-mode
         synchronize:
           configService.get('NODE_ENV') != 'production' ? true : false,
         autoLoadEntities: true,
-        logging: 'all',
+        logging: process.env.LOG.split('-') as LoggerOptions,
         extra:
           configService.get('NODE_ENV') == 'production'
             ? {
@@ -60,40 +62,41 @@ import { EmailVerifyModelService } from './models/email-verify/email-verify-mode
             : {},
       }),
     }),
-    // repos
-    TypeOrmModule.forFeature([
-      RoleModel,
-      UserModel,
-      MangaModel,
-      GenreModel,
-      AuthorModel,
-      InviteModel,
-      CommentModel,
-      LanguageModel,
-      EmailVerifyModel,
-    ]),
   ],
-  providers: [
-    RoleModelService,
-    UserModelService,
-    MangaModelService,
-    GenreModelService,
-    AuthorModelService,
-    InviteModelService,
-    CommentModelService,
-    LanguageModelService,
-    EmailVerifyModelService,
-  ],
-  exports: [
-    RoleModelService,
-    UserModelService,
-    MangaModelService,
-    GenreModelService,
-    AuthorModelService,
-    InviteModelService,
-    CommentModelService,
-    LanguageModelService,
-    EmailVerifyModelService,
-  ],
+  //   repos
+  //   TypeOrmModule.forFeature([
+  //     RoleModel,
+  //     UserModel,
+  //     MangaModel,
+  //     GenreModel,
+  //     AuthorModel,
+  //     InviteModel,
+  //     CommentModel,
+  //     LanguageModel,
+  //     EmailVerifyModel,
+  //   ]),
+  // ],
+  // providers: [
+  //   RoleModelService,
+  //   UserModelService,
+  //   MangaModelService,
+  //   GenreModelService,
+  //   AuthorModelService,
+  //   InviteModelService,
+  //   CommentModelService,
+  //   LanguageModelService,
+  //   EmailVerifyModelService,
+  // ],
+  // exports: [
+  //   RoleModelService,
+  //   UserModelService,
+  //   MangaModelService,
+  //   GenreModelService,
+  //   AuthorModelService,
+  //   InviteModelService,
+  //   CommentModelService,
+  //   LanguageModelService,
+  //   EmailVerifyModelService,
+  // ],
 })
 export class DatabaseModule {}
