@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AuthService {
-    constructor(private _jwtService: JwtService) {}
+  constructor(private _jwtService: JwtService) {}
 
   genJWT(object: { id: number; name: string; type: string }): string {
     const { id, name, type } = object;
@@ -50,6 +50,39 @@ export class AuthService {
         return payload?.context?.type;
     } catch (error) {
       return '';
+    }
+  }
+
+  userObject(token: string): {
+    sub: string;
+    context: {
+      username: string;
+      extra: number;
+      type: string;
+    };
+  } {
+    try {
+      const payload = this._jwtService.verify(token, {
+        secret: process.env.SECRET_KEY,
+      });
+      if (payload?.context?.username && payload?.context?.extra)
+        return {
+          sub: payload?.context?.username,
+          context: {
+            username: payload?.context?.username,
+            extra: payload?.context?.extra,
+            type: payload?.context?.type,
+          },
+        };
+    } catch (error) {
+      return {
+        sub: '',
+        context: {
+          username: '',
+          extra: -1,
+          type: '',
+        },
+      };
     }
   }
 }
