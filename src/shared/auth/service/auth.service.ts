@@ -1,5 +1,6 @@
 import { JwtService } from '@nestjs/jwt';
 import { Injectable } from '@nestjs/common';
+import { Payload } from '../interface/payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +20,7 @@ export class AuthService {
 
   validateToken(token: string): boolean {
     try {
-      const validation = this._jwtService.verify(token, {
+      const validation = this._jwtService.verify<Payload>(token, {
         secret: process.env.SECRET_KEY,
       });
       if (validation?.context?.username && validation?.context?.extra)
@@ -31,7 +32,7 @@ export class AuthService {
 
   userID(token: string): number {
     try {
-      const payload = this._jwtService.verify(token, {
+      const payload = this._jwtService.verify<Payload>(token, {
         secret: process.env.SECRET_KEY,
       });
       if (payload?.context?.username && payload?.context?.extra)
@@ -43,7 +44,7 @@ export class AuthService {
 
   userRole(token: string): string {
     try {
-      const payload = this._jwtService.verify(token, {
+      const payload = this._jwtService.verify<Payload>(token, {
         secret: process.env.SECRET_KEY,
       });
       if (payload?.context?.username && payload?.context?.extra)
@@ -53,14 +54,7 @@ export class AuthService {
     }
   }
 
-  userObject(token: string): {
-    sub: string;
-    context: {
-      username: string;
-      extra: number;
-      type: string;
-    };
-  } {
+  userObject(token: string): Payload {
     try {
       const payload = this._jwtService.verify(token, {
         secret: process.env.SECRET_KEY,
