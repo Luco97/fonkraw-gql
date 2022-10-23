@@ -14,10 +14,14 @@ import { UserModel } from '../user/user.model';
 import { GenreModel } from '../genre/genre.model';
 import { AuthorModel } from '../author/author.model';
 import { LanguageModel } from '../language/language.model';
+import { Field, ObjectType } from '@nestjs/graphql';
 
 @Entity()
+@ObjectType()
 export class MangaModel {
-  @PrimaryGeneratedColumn('increment') id: number;
+  @Field(() => Number)
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
   @Column({ type: 'varchar' }) title: string;
 
@@ -25,7 +29,9 @@ export class MangaModel {
 
   @Column({ type: 'varchar' }) cover_url: string;
 
-  @Column({ type: 'boolean' }) active: boolean;
+  @Field(() => Boolean)
+  @Column({ type: 'boolean' })
+  active: boolean;
 
   @CreateDateColumn({ type: 'timestamp' }) created_at: Date;
 
