@@ -60,7 +60,7 @@ export class UserModel {
   @JoinTable()
   mangas: MangaModel[];
 
-  @ManyToOne(() => RoleModel, (role) => role.users)
+  @ManyToOne(() => RoleModel /*, (role) => role.users */)
   role: RoleModel;
 
   @OneToOne(() => EmailVerifyModel)

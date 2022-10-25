@@ -15,6 +15,6 @@ export class RoleModel {
   })
   role_name: string;
 
-  @OneToMany(() => UserModel, (user) => user.role)
-  users: UserModel[];
+  // @OneToMany(() => UserModel, (user) => user.role)
+  // users: UserModel[];
 }
