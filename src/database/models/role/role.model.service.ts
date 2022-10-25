@@ -9,7 +9,11 @@ export class RoleModelService {
     @InjectRepository(RoleModel) private _roleRepo: Repository<RoleModel>,
   ) {}
 
-  findOne(uuid: string): Promise<RoleModel> {
+  create_basic_role(): Promise<RoleModel> {
+    return this._roleRepo.save(this._roleRepo.create({ role_name: 'basic' }));
+  }
+
+  find_one(uuid: string): Promise<RoleModel> {
     return this._roleRepo
       .createQueryBuilder('role')
       .where('role.id = :uuid', { uuid })
