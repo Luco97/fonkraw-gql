@@ -23,29 +23,42 @@ export class MangaModel {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column({ type: 'varchar' }) title: string;
+  @Field(() => String)
+  @Column({ type: 'varchar' })
+  title: string;
 
-  @Column({ type: 'int' }) pages: number;
+  @Field(() => Number)
+  @Column({ type: 'int' })
+  pages: number;
 
-  @Column({ type: 'varchar' }) cover_url: string;
+  @Field(() => String, { nullable: true })
+  @Column({ type: 'varchar', nullable: true })
+  cover_url: string;
 
   @Field(() => Boolean)
-  @Column({ type: 'boolean' })
+  @Column({ type: 'boolean', default: false })
   active: boolean;
 
-  @CreateDateColumn({ type: 'timestamp' }) created_at: Date;
+  @Field(() => Date)
+  @CreateDateColumn({ type: 'timestamp' })
+  created_at: Date;
 
-  @UpdateDateColumn({ type: 'timestamp' }) updated_at: Date;
+  @Field(() => Date)
+  @UpdateDateColumn({ type: 'timestamp' })
+  updated_at: Date;
 
   @DeleteDateColumn({ type: 'timestamp' }) deleted_at: Date;
 
+  @Field(() => LanguageModel, { nullable: true })
   @ManyToOne(() => LanguageModel, (language) => language.manga)
   language: LanguageModel;
 
+  @Field(() => AuthorModel)
   @ManyToMany(() => AuthorModel, (author) => author.mangas, { nullable: false })
   @JoinTable()
   authors: AuthorModel[];
 
+  @Field(() => GenreModel, { nullable: true })
   @ManyToMany(() => GenreModel, (genre) => genre.mangas)
   @JoinTable()
   genres: GenreModel[];
