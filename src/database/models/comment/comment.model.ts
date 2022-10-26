@@ -7,13 +7,18 @@ import {
 } from 'typeorm';
 
 import { UserModel } from '../user/user.model';
+import { Field, ObjectType } from '@nestjs/graphql';
+
 import { MangaModel } from '../manga/manga.model';
 
 @Entity()
+@ObjectType()
 export class CommentModel {
-  @PrimaryGeneratedColumn({})
+  @Field(() => Number)
+  @PrimaryGeneratedColumn('increment')
   id: number;
 
+  @Field(() => String)
   @Column({
     length: '1000',
     type: 'varchar',
@@ -21,6 +26,7 @@ export class CommentModel {
   })
   comment: string;
 
+  @Field(() => Date)
   @CreateDateColumn({
     type: 'timestamp',
   })
