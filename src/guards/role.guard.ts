@@ -26,7 +26,7 @@ export class RoleGuard implements CanActivate {
     if (!(extra || type)) return false;
     return new Promise((resolve, reject) =>
       this._roleModelService
-        .findOne(type)
+        .find_one(type)
         .then(
           (role) =>
             roles.includes(role.role_name) ? resolve(true) : resolve(false),
