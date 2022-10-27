@@ -1,3 +1,5 @@
+import { Field, ObjectType } from '@nestjs/graphql';
+
 import {
   Entity,
   Column,
@@ -15,16 +17,27 @@ import { MangaModel } from '../manga/manga.model';
 import { InviteModel } from '../invite/invite.model';
 
 @Entity()
+@ObjectType()
 export class AuthorModel {
-  @PrimaryGeneratedColumn('increment') id: number;
+  @Field(() => Number)
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
-  @Column({ type: 'varchar' }) alias: string;
+  @Field(() => String)
+  @Column({ type: 'varchar' })
+  alias: string;
 
-  @Column({ type: 'varchar', length: '1500' }) description: string;
+  @Field(() => String)
+  @Column({ type: 'varchar', length: '1500' })
+  description: string;
 
-  @CreateDateColumn({ type: 'timestamp' }) create_at: Date;
+  @Field(() => Date)
+  @CreateDateColumn({ type: 'timestamp' })
+  create_at: Date;
 
-  @UpdateDateColumn({ type: 'timestamp' }) update_at: Date;
+  @Field(() => Date)
+  @UpdateDateColumn({ type: 'timestamp' })
+  update_at: Date;
 
   @DeleteDateColumn({ type: 'timestamp' }) delete_at: Date;
 
