@@ -21,4 +21,8 @@ export class GenreModel {
 
   @ManyToMany(() => MangaModel, (manga) => manga.genres)
   mangas: MangaModel[];
+
+  // Map's fields (fields created using things like loadRelationCountAndMap)
+  @Field(() => Number, { nullable: true })
+  mangas_count?: number;
 }
