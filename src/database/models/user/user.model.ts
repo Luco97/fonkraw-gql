@@ -1,3 +1,5 @@
+import { Field, ObjectType } from '@nestjs/graphql';
+
 import {
   Column,
   Entity,
@@ -20,10 +22,12 @@ import { AuthorModel } from '../author/author.model';
 import { EmailVerifyModel } from '../email-verify/email-verify.model';
 
 @Entity()
+@ObjectType()
 export class UserModel {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
+  @Field(() => String)
   @Column({
     type: 'varchar',
     length: 40,
@@ -42,6 +46,7 @@ export class UserModel {
   })
   password: string;
 
+  @Field(() => Date)
   @CreateDateColumn({
     type: 'timestamp',
     select: false,
@@ -67,6 +72,7 @@ export class UserModel {
   @JoinColumn()
   activation: EmailVerifyModel;
 
+  @Field(() => AuthorModel, { nullable: true })
   @OneToOne(() => AuthorModel, (author) => author.user, { nullable: true })
   @JoinColumn()
   author_profile: AuthorModel;
@@ -80,4 +86,8 @@ export class UserModel {
     const bcSaltRound = await genSalt(saltRound);
     this.password = await hash(this.password, bcSaltRound);
   }
+
+  // Map's fields (fields created using things like loadRelationCountAndMap)
+  @Field(() => Number, { nullable: true })
+  mangas_favorites?: number;
 }
