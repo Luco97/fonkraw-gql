@@ -65,4 +65,11 @@ export class MangaModel {
 
   @ManyToMany(() => UserModel, (user) => user.mangas)
   users: UserModel[];
+
+  // Map's fields (fields created using things like loadRelationCountAndMap)
+  @Field(() => Number, { nullable: true })
+  favorites_user?: number;
+
+  @Field(() => Number, { nullable: true })
+  commentaries?: number;
 }
