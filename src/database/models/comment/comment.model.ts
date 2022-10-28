@@ -32,7 +32,7 @@ export class CommentModel {
   })
   created_at: Date;
 
-  @ManyToOne(() => MangaModel, { nullable: false })
+  @ManyToOne(() => MangaModel, (manga) => manga.comments, { nullable: false })
   manga: MangaModel;
 
   @ManyToOne(() => UserModel, { nullable: false })

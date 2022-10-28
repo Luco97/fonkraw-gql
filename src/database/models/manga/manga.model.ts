@@ -8,6 +8,7 @@ import {
   DeleteDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
 
 import { UserModel } from '../user/user.model';
@@ -15,6 +16,7 @@ import { GenreModel } from '../genre/genre.model';
 import { AuthorModel } from '../author/author.model';
 import { LanguageModel } from '../language/language.model';
 import { Field, ObjectType } from '@nestjs/graphql';
+import { CommentModel } from '../comment/comment.model';
 
 @Entity()
 @ObjectType()
@@ -65,6 +67,9 @@ export class MangaModel {
 
   @ManyToMany(() => UserModel, (user) => user.mangas)
   users: UserModel[];
+
+  @OneToMany(() => CommentModel, (comment) => comment.manga, { nullable: true })
+  comments: CommentModel[];
 
   // Map's fields (fields created using things like loadRelationCountAndMap)
   @Field(() => Number, { nullable: true })
