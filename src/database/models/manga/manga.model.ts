@@ -55,12 +55,12 @@ export class MangaModel {
   @ManyToOne(() => LanguageModel, (language) => language.manga)
   language: LanguageModel;
 
-  @Field(() => AuthorModel)
+  @Field(() => [AuthorModel])
   @ManyToMany(() => AuthorModel, (author) => author.mangas, { nullable: false })
   @JoinTable()
   authors: AuthorModel[];
 
-  @Field(() => GenreModel, { nullable: true })
+  @Field(() => [GenreModel], { nullable: true })
   @ManyToMany(() => GenreModel, (genre) => genre.mangas)
   @JoinTable()
   genres: GenreModel[];
