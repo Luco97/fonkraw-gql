@@ -47,7 +47,7 @@ export class AuthorModel {
   @OneToOne(() => UserModel, (user) => user.author_profile)
   user: UserModel;
 
-  @ManyToMany(() => MangaModel)
+  @ManyToMany(() => MangaModel, (manga) => manga.authors)
   mangas: MangaModel[];
 
   // Map's fields (fields created using things like loadRelationCountAndMap)
