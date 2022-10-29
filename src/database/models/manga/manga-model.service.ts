@@ -9,12 +9,35 @@ export class MangaModelService {
     @InjectRepository(MangaModel) private _mangaRepo: Repository<MangaModel>,
   ) {}
 
-  find_all(parameters: {}): Promise<[MangaModel[], number]> {
-    const {} = parameters;
+  find_all(parameters: {
+    skip: number;
+    take: number;
+    search: string;
+    orderProperty: string;
+    order: 'ASC' | 'DESC';
+  }): Promise<[MangaModel[], number]> {
+    const { order, orderProperty, skip, take, search } = parameters;
+    const orderBy: string = `items.${
+      ['title', 'pages', 'created_at', 'favorites_user'].includes(orderProperty)
+        ? orderProperty
+        : 'createdAt'
+    }`;
     return this._mangaRepo
       .createQueryBuilder('manga')
       .leftJoinAndSelect('manga.genres', 'genres')
+      .loadRelationCountAndMap(
+        'genres.mangas_count',
+        'genres.mangas',
+        'tags',
+        (qb) => qb.orderBy('cnt'),
+      )
       .leftJoinAndSelect('manga.authors', 'authors')
+      .loadRelationCountAndMap(
+        'authors.mangas_count',
+        'authors.mangas',
+        'artists',
+        (qb) => qb.orderBy('cnt'),
+      )
       .leftJoinAndSelect('manga.language', 'language')
       .loadRelationCountAndMap(
         'manga.favorites_user',
@@ -28,9 +51,12 @@ export class MangaModelService {
         'commentarious',
         (qb) => qb.orderBy('cnt'),
       )
-      .orderBy()
-      .take()
-      .skip()
+      .where('manga.title = :search', { search: `%${search}%` })
+      .orWhere('genres.name = :search', { search: `%${search}%` })
+      .orWhere('authors.alias = :search', { search: `%${search}%` })
+      .orderBy(orderBy, ['ASC', 'DESC'].includes(order) ? order : 'ASC')
+      .take(take || 10)
+      .skip(skip || 0)
       .getManyAndCount();
   }
 }
