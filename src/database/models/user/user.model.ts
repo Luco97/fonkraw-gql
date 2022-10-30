@@ -34,6 +34,10 @@ export class UserModel {
   })
   username: string;
 
+  @Field(() => String, { nullable: true })
+  @Column({ type: 'varchar', nullable: true })
+  image_url: string;
+
   @Column({
     type: 'varchar',
     length: 60,
