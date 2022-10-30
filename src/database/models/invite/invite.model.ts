@@ -43,8 +43,7 @@ export class InviteModel {
   updated_at: Date;
 
   @Field(() => AuthorModel)
-  @OneToOne(() => AuthorModel, { nullable: false })
-  @JoinColumn()
+  @ManyToOne(() => AuthorModel, { nullable: false })
   from_author: AuthorModel;
 
   @Field(() => AuthorModel)
