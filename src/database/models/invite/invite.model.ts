@@ -50,7 +50,6 @@ export class InviteModel {
   @ManyToOne(() => AuthorModel, { nullable: false })
   to_author: AuthorModel;
 
-  @OneToOne(() => MangaModel, { nullable: false })
-  @JoinColumn()
+  @ManyToOne(() => MangaModel, { nullable: false })
   manga: MangaModel;
 }
