@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserModel } from './user.model';
+
 import { Repository } from 'typeorm';
+
+import { UserModel } from './user.model';
 import { RoleModel } from '../role/role.model';
 
 @Injectable()
@@ -44,6 +46,16 @@ export class UserModelService {
       .where('user.email =: email', { email })
       .getOne();
   }
+
+  // if user.author_profile exist then cannot create another author_profile
+  // author_check(parameters: { user_id: number }) {
+  //   const { user_id } = parameters;
+  //   return this._userRepo
+  //     .createQueryBuilder('user')
+  //     .leftJoinAndSelect('user.author_profile', 'author_profile')
+  //     .where('user.id = :user_id', { user_id })
+  //     .getOne();
+  // }
 
   // Manga features
   manga_creator(parameters: { user_id: number; manga_id: number }) {
