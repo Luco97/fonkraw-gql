@@ -423,7 +423,6 @@ export class MangaModelService {
       .leftJoin('creator.user', 'user')
       .where('user.id = :user_id', { user_id })
       .andWhere('manga.id = :manga_id', { manga_id })
-      .orderBy('manga.created_at', 'ASC')
       .getOne();
   }
 
@@ -439,6 +438,16 @@ export class MangaModelService {
       .leftJoin('creator.user', 'user')
       .where('user.id = :user_id', { user_id })
       .andWhere('manga.id = :manga_id', { manga_id })
+      .getCount();
+  }
+
+  already_author(parameters: { author_id: number; manga_id: number }) {
+    const { manga_id, author_id } = parameters;
+    return this._mangaRepo
+      .createQueryBuilder('manga')
+      .leftJoin('manga.authors', 'authors')
+      .where('manga.id = :manga_id', { manga_id })
+      .andWhere('authors.id = :author_id', { author_id })
       .getCount();
   }
 }
