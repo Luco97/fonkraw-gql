@@ -3,11 +3,10 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import {
   Column,
   Entity,
-  OneToOne,
   ManyToOne,
-  JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  DeleteDateColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -41,6 +40,8 @@ export class InviteModel {
   @Field(() => Date)
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
+
+  @DeleteDateColumn({ type: 'timestamp' }) deleted_at: Date;
 
   @Field(() => AuthorModel)
   @ManyToOne(() => AuthorModel, { nullable: false })
