@@ -102,10 +102,17 @@ export class MangaModelService {
     title: string;
     pages: number;
     cover_url: string;
+    author_id: number;
   }): Promise<MangaModel> {
-    const { title, pages, cover_url } = parameters;
+    const { title, pages, cover_url, author_id } = parameters;
     return this._mangaRepo.save(
-      this._mangaRepo.create({ title, pages, cover_url }),
+      this._mangaRepo.create({
+        title,
+        pages,
+        cover_url,
+        creator: { id: author_id },
+        authors: [{ id: author_id }],
+      }),
     );
   }
 
