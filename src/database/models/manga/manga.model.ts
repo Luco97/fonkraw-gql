@@ -60,6 +60,11 @@ export class MangaModel {
   @JoinTable()
   authors: AuthorModel[];
 
+  @ManyToOne(() => AuthorModel, (author) => author.init_mangas, {
+    nullable: false,
+  })
+  creator: AuthorModel;
+
   @Field(() => [GenreModel], { nullable: true })
   @ManyToMany(() => GenreModel, (genre) => genre.mangas)
   @JoinTable()

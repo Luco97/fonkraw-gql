@@ -41,6 +41,9 @@ export class AuthorModel {
 
   @DeleteDateColumn({ type: 'timestamp' }) delete_at: Date;
 
+  // @OneToMany(() => InviteModel, (request) => request.from_author)
+  // send_invites: InviteModel[];
+
   @OneToMany(() => InviteModel, (request) => request.to_author)
   invites: InviteModel[];
 
@@ -49,6 +52,9 @@ export class AuthorModel {
 
   @ManyToMany(() => MangaModel, (manga) => manga.authors)
   mangas: MangaModel[];
+
+  @OneToMany(() => MangaModel, (manga) => manga.creator)
+  init_mangas: MangaModel[];
 
   // Map's fields (fields created using things like loadRelationCountAndMap)
   @Field(() => Number, { nullable: true })
