@@ -81,17 +81,18 @@ export class InviteModelService {
 
   // See if exist to send invitation
   invite_already_exist(parameters: {
+    user_id: number;
     manga_id: number;
     to_author_id: number;
-    from_author_id: number;
   }): Promise<InviteModel> {
-    const { to_author_id, from_author_id, manga_id } = parameters;
+    const { to_author_id, user_id, manga_id } = parameters;
     return this._inviRepo
       .createQueryBuilder('invite')
       .leftJoin('invite.to_author', 'to_author')
       .leftJoin('invite.from_author', 'from_author')
+      .leftJoin('from_author.user', 'user')
       .leftJoin('invite.manga', 'manga')
-      .where('from_author.id = :from_author_id', { from_author_id })
+      .where('user.id = :user_id', { user_id })
       .andWhere('to_author.id = :to_author_id', { to_author_id })
       .andWhere('manga.id = :manga_id', { manga_id })
       .getOne();
