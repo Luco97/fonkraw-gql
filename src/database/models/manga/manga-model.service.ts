@@ -366,4 +366,79 @@ export class MangaModelService {
       .skip(skip || 0)
       .getManyAndCount();
   }
+
+  find_editables(parameters: {
+    skip: number;
+    take: number;
+    user_id: number;
+    // manga_id: number;
+  }): Promise<[MangaModel[], number]> {
+    const { user_id, skip, take } = parameters;
+    return this._mangaRepo
+      .createQueryBuilder('manga')
+      .leftJoin('manga.creator', 'creator')
+      .leftJoin('creator.user', 'user')
+      .where('user.id = :user_id', { user_id })
+      .orderBy('manga.created_at', 'ASC')
+      .take(take || 10)
+      .skip(skip || 0)
+      .getManyAndCount();
+  }
+
+  find_editable(parameters: {
+    user_id: number;
+    manga_id: number;
+  }): Promise<MangaModel> {
+    const { user_id, manga_id } = parameters;
+    return this._mangaRepo
+      .createQueryBuilder('manga')
+      .leftJoinAndSelect('manga.genres', 'genres')
+      .loadRelationCountAndMap(
+        'genres.mangas_count',
+        'genres.mangas',
+        'tags',
+        (qb) => qb.orderBy('cnt'),
+      )
+      .leftJoinAndSelect('manga.authors', 'authors')
+      .loadRelationCountAndMap(
+        'authors.mangas_count',
+        'authors.mangas',
+        'artists',
+        (qb) => qb.orderBy('cnt'),
+      )
+      .leftJoinAndSelect('manga.language', 'language')
+      .loadRelationCountAndMap(
+        'manga.favorites_user',
+        'manga.users',
+        'favorites',
+        (qb) => qb.orderBy('cnt'),
+      )
+      .loadRelationCountAndMap(
+        'manga.commentaries',
+        'manga.comments',
+        'commentarious',
+        (qb) => qb.orderBy('cnt'),
+      )
+      .leftJoin('manga.creator', 'creator')
+      .leftJoin('creator.user', 'user')
+      .where('user.id = :user_id', { user_id })
+      .andWhere('manga.id = :manga_id', { manga_id })
+      .orderBy('manga.created_at', 'ASC')
+      .getOne();
+  }
+
+  // If value = 1 can send invitation
+  valid_creator(parameters: {
+    user_id: number;
+    manga_id: number;
+  }): Promise<number> {
+    const { user_id, manga_id } = parameters;
+    return this._mangaRepo
+      .createQueryBuilder('manga')
+      .leftJoin('manga.creator', 'creator')
+      .leftJoin('creator.user', 'user')
+      .where('user.id = :user_id', { user_id })
+      .andWhere('manga.id = :manga_id', { manga_id })
+      .getCount();
+  }
 }
