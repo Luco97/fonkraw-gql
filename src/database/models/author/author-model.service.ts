@@ -68,6 +68,16 @@ export class AuthorModelService {
     );
   }
 
+  //  the same thing on manga
+  // already_author(parameters: { author_id: number; manga_id: number }) {
+  //   const { manga_id, author_id } = parameters;
+  //   return this._authorRepo
+  //     .createQueryBuilder('author')
+  //     .leftJoin('author.mangas', 'mangas')
+  //     .where('mangas.id = :manga_id', { manga_id })
+  //     .andWhere('');
+  // }
+
   author_check(parameters: { user_id: number }): Promise<AuthorModel> {
     const { user_id } = parameters;
     return this._authorRepo
@@ -78,14 +88,14 @@ export class AuthorModelService {
   }
 
   // Validate if this user can send invitation
-  send_invitation_check(parameters: { user_id: number; manga_id: number }) {
-    const { user_id, manga_id } = parameters;
-    this._authorRepo
-      .createQueryBuilder('author')
-      .leftJoin('author.user', 'user')
-      .leftJoin('author.init_mangas', 'init_mangas')
-      .where('user.id = :user_id', { user_id })
-      .andWhere('init_mangas = :manga_id', { manga_id })
-      .getOne();
-  }
+  // send_invitation_check(parameters: { user_id: number; manga_id: number }) {
+  //   const { user_id, manga_id } = parameters;
+  //   this._authorRepo
+  //     .createQueryBuilder('author')
+  //     .leftJoin('author.user', 'user')
+  //     .leftJoin('author.init_mangas', 'init_mangas')
+  //     .where('user.id = :user_id', { user_id })
+  //     .andWhere('init_mangas = :manga_id', { manga_id })
+  //     .getOne();
+  // }
 }
