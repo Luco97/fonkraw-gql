@@ -43,7 +43,8 @@ export class UserModelService {
     return this._userRepo
       .createQueryBuilder('user')
       .select(['user.email', 'user.username', 'user.password'])
-      .where('user.email =: email', { email })
+      .leftJoinAndSelect('user.role', 'role')
+      .where('user.email = :email', { email })
       .getOne();
   }
 
