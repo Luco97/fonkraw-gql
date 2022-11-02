@@ -34,7 +34,7 @@ export class UserModelService {
     return this._userRepo
       .createQueryBuilder('user')
       .select(['user.email', 'user.username'])
-      .where('user.email =: email', { email })
+      .where('user.email = :email', { email })
       .orWhere('user.username = :username', { username })
       .getCount();
   }
