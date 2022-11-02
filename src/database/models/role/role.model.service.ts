@@ -13,6 +13,13 @@ export class RoleModelService {
     return this._roleRepo.save(this._roleRepo.create({ role_name: 'basic' }));
   }
 
+  get get_basic(): Promise<RoleModel> {
+    return this._roleRepo
+      .createQueryBuilder('role')
+      .where('role.role_name = :role_name', { role_name: 'basic' })
+      .getOne();
+  }
+
   find_one(uuid: string): Promise<RoleModel> {
     return this._roleRepo
       .createQueryBuilder('role')
