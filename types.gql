@@ -1,0 +1,95 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type GenreModel {
+  id: Float!
+  name: String!
+  description: String!
+  mangas_count: Float
+}
+
+type AuthorModel {
+  id: Float!
+  alias: String!
+  description: String!
+  create_at: DateTime!
+  update_at: DateTime!
+  mangas_count: Float
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type LanguageModel {
+  id: Float!
+  language: String!
+  country: String!
+  country_flag: String!
+}
+
+type MangaModel {
+  id: Float!
+  title: String!
+  pages: Float!
+  cover_url: String
+  active: Boolean!
+  created_at: DateTime!
+  updated_at: DateTime!
+  language: LanguageModel
+  authors: [AuthorModel!]!
+  genres: [GenreModel!]
+  favorites_user: Float
+  commentaries: Float
+}
+
+"""output object of register_user"""
+type RegisterOutput {
+  """status response"""
+  status: Float!
+
+  """message for extra info"""
+  message: String!
+}
+
+"""output object in sign in mutation"""
+type SignInOutput {
+  """status response"""
+  status: Float!
+
+  """message for extra info"""
+  message: String!
+  token: String
+}
+
+type Query {
+  findAll: [MangaModel!]!
+}
+
+type Mutation {
+  sign_in(credentials: sign_in!): SignInOutput!
+  register_user(user: register_user!): RegisterOutput!
+}
+
+"""sign in object (with email and password)"""
+input sign_in {
+  """email of user to log in"""
+  email: String!
+
+  """password of the user"""
+  password: String!
+}
+
+"""register object for user creation"""
+input register_user {
+  """email for the new user"""
+  email: String!
+
+  """username for the new user"""
+  username: String!
+
+  """password for the user"""
+  password: String!
+}
