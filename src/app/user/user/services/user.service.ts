@@ -35,6 +35,8 @@ export class UserService {
             this._userModel
               .create_user({ email, password, username, role })
               .then(() =>
+                // create verify uuid with email model to confirm email
+                // user not confirmed shouldn't save mangas on favorite
                 resolve({ message: 'user created', status: HttpStatus.OK }),
               ),
           );
