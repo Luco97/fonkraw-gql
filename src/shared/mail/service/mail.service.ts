@@ -27,6 +27,7 @@ export class MailService {
     subject: string,
     html: string,
   ): Promise<SentMessageInfo> {
+    this._logger.log(`user created, sending email verification to ${email} `);
     return this.transport.sendMail({
       from: process.env.MAIL_USER,
       to: email,
