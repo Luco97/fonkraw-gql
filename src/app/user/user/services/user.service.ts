@@ -3,18 +3,22 @@ import { Injectable, HttpStatus } from '@nestjs/common';
 import { compare } from 'bcrypt';
 
 import { AuthService } from '@shared/auth';
+import { MailService, html_template_verify } from '@shared/mail';
 import { RoleModelService } from '@database/models/role';
 import { UserModelService } from '@database/models/user';
 
 import { SignInOutput } from '../outputs/sign-in.output';
 import { RegisterOutput } from '../outputs/register.output';
+import { EmailVerifyModelService } from '@database/models/email-verify';
 
 @Injectable()
 export class UserService {
   constructor(
+    private _mailService: MailService,
     private _authService: AuthService,
     private _userModel: UserModelService,
     private _roleModel: RoleModelService,
+    private _emailModel: EmailVerifyModelService,
   ) {}
 
   create_user(parameters: {
@@ -31,13 +35,40 @@ export class UserService {
             message: 'email or username on use',
           });
         } else {
-          this._roleModel.get_basic.then((role) =>
+          Promise.all([
+            this._roleModel.get_basic,
+            this._emailModel.create,
+          ]).then(([role, emailVerify]) =>
             this._userModel
-              .create_user({ email, password, username, role })
+              .create_user({
+                email,
+                password,
+                username,
+                role_uuid: role.uuid,
+                emailVerify_uuid: emailVerify.uuid,
+              })
               .then(() =>
                 // create verify uuid with email model to confirm email
                 // user not confirmed shouldn't save mangas on favorite
-                resolve({ message: 'user created', status: HttpStatus.OK }),
+                {
+                  this._mailService
+                    .sendMail(
+                      email,
+                      `Welcome ${username} to Fonkraw !`,
+                      html_template_verify
+                        .replace(/{{ appName }}/g, 'Fonkraw')
+                        .replace(/{{ username }}/g, username)
+                        .replace(/{{ domain }}/g, process.env.DOMAIN)
+                        .replace(/{{ path }}/g, `/${process.env.PATH}/`)
+                        .replace(/{{ uuid }}/g, emailVerify.uuid),
+                    )
+                    .then(() =>
+                      resolve({
+                        message: 'user created',
+                        status: HttpStatus.OK,
+                      }),
+                    );
+                },
               ),
           );
         }
