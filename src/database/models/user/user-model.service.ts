@@ -16,15 +16,18 @@ export class UserModelService {
     email: string;
     username: string;
     password: string;
-    role: RoleModel;
+    role_uuid: string;
+    emailVerify_uuid: string;
   }): Promise<UserModel> {
-    const { email, password, username, role } = parameters;
+    const { email, password, username, role_uuid, emailVerify_uuid } =
+      parameters;
     return this._userRepo.save(
       this._userRepo.create({
         email,
         password,
         username,
-        role,
+        role: { uuid: role_uuid },
+        activation: { uuid: emailVerify_uuid },
       }),
     );
   }
