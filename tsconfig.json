@@ -19,7 +19,9 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@database/models/*": ["src/database/models/*"],
-      "@shared/*": ["src/shared/*"]
+      "@shared/*": ["src/shared/*"],
+      "@guard/*": ["src/guards/*"],
+      "@utils/*": ["src/utils/*"]
     }
   }
 }
