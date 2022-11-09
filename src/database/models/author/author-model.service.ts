@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 
 import { AuthorModel } from './author.model';
 
@@ -78,12 +78,24 @@ export class AuthorModelService {
   //     .andWhere('');
   // }
 
-  author_check(parameters: { user_id: number }): Promise<AuthorModel> {
-    const { user_id } = parameters;
+  update(parameters: {
+    author_id: number;
+    description: string;
+  }): Promise<UpdateResult> {
+    const { author_id, description } = parameters;
+    return this._authorRepo.update({ id: author_id }, { description });
+  }
+
+  author_check(parameters: {
+    alias?: string;
+    user_id: number;
+  }): Promise<AuthorModel> {
+    const { user_id, alias } = parameters;
     return this._authorRepo
       .createQueryBuilder('author')
       .leftJoin('author.user', 'user')
       .where('user.id = :user_id', { user_id })
+      .orWhere('LOWER(author.alias) = LOWER(:alias)', { alias })
       .getOne();
   }
 
