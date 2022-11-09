@@ -9,10 +9,13 @@ import { RoleModelModule } from '@database/models/role';
 import { InviteModelModule } from '@database/models/invite';
 import { EmailVerifyModelModule } from '@database/models/email-verify';
 
-// Resolvers
+// user Resolvers
+import { UpdateResolver } from './user/resolvers/update.resolver';
+import { SignInResolver } from './user/resolvers/sign-in.resolver';
+import { RegisterResolver } from './user/resolvers/register.resolver';
+
+// invite Resolvers
 import { ReadResolver } from './invite/resolver/read.resolver';
-import { SignInResolver } from './user/resolver/sign-in.resolver';
-import { RegisterResolver } from './user/resolver/register.resolver';
 
 // Services
 import { UserService } from './user/services/user.service';
@@ -27,6 +30,14 @@ import { UserService } from './user/services/user.service';
     EmailVerifyModelModule,
     ConfigModule.forRoot({}),
   ],
-  providers: [SignInResolver, RegisterResolver, ReadResolver, UserService],
+  providers: [
+    // resolvers
+    UpdateResolver,
+    SignInResolver,
+    RegisterResolver,
+    ReadResolver,
+    // services
+    UserService,
+  ],
 })
 export class UserModule {}
