@@ -5,11 +5,12 @@ import { compare } from 'bcrypt';
 import { AuthService } from '@shared/auth';
 import { MailService, html_template_verify } from '@shared/mail';
 import { RoleModelService } from '@database/models/role';
-import { UserModelService } from '@database/models/user';
+import { UserModel, UserModelService } from '@database/models/user';
 
 import { SignInOutput } from '../outputs/sign-in.output';
 import { RegisterOutput } from '../outputs/register.output';
 import { EmailVerifyModelService } from '@database/models/email-verify';
+import { UpdateOutput } from '../outputs/update.output';
 
 @Injectable()
 export class UserService {
@@ -107,5 +108,37 @@ export class UserService {
         }
       }),
     );
+  }
+
+  update_info(parameters: {
+    user_id: number;
+    image_url: string;
+    description: string;
+  }): Promise<UpdateOutput> {
+    const { user_id, description, image_url } = parameters;
+
+    return new Promise<UpdateOutput>((resolve, reject) => {
+      const promises: Promise<UserModel>[] = [];
+      let value_updated: string = '';
+      if (image_url) {
+        value_updated = 'image_url';
+        promises.push(
+          this._userModel.update_user_image({ user_id, image_url }),
+        );
+      } else if (description) {
+        value_updated = value_updated
+          ? `${value_updated} & description`
+          : 'description';
+        promises.push(
+          this._userModel.update_user_description({ user_id, description }),
+        );
+      }
+      Promise.all(promises).then(() => {
+        resolve({
+          status: HttpStatus.OK,
+          message: `succefully updated ${value_updated}`,
+        });
+      });
+    });
   }
 }
