@@ -32,6 +32,36 @@ export class UserModelService {
     );
   }
 
+  update_user_image(parameters: {
+    user_id: number;
+    image_url: string;
+  }): Promise<UserModel> {
+    const { image_url, user_id } = parameters;
+    return this._userRepo.save(
+      { id: user_id, image_url },
+      { listeners: false },
+    );
+  }
+
+  update_user_description(parameters: {
+    user_id: number;
+    description: string;
+  }): Promise<UserModel> {
+    const { description, user_id } = parameters;
+    return this._userRepo.save(
+      { id: user_id, description },
+      { listeners: false },
+    );
+  }
+
+  update_user_password(parameters: {
+    user_id: number;
+    password: string;
+  }): Promise<UserModel> {
+    const { password, user_id } = parameters;
+    return this._userRepo.save({ id: user_id, password });
+  }
+
   find_one(parameters: { email: string; username: string }): Promise<number> {
     const { email, username } = parameters;
     return this._userRepo
