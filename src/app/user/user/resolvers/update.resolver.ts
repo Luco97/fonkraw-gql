@@ -19,7 +19,7 @@ export class UpdateResolver {
   @Mutation(() => UpdateOutput)
   @UseGuards(AuthGuard)
   update_user_info(
-    @Args() updateInfo: UpdateInput,
+    @Args('update_info') updateInfo: UpdateInput,
     @Context() context,
   ): Promise<UpdateOutput> {
     const req: Request = context.req;
