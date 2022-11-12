@@ -141,4 +141,21 @@ export class UserService {
       });
     });
   }
+
+  confirm_pass(parameters: {
+    user_id: number;
+    password: string;
+  }): Promise<boolean> {
+    const { password, user_id } = parameters;
+    return new Promise<boolean>((resolve, reject) => {
+      this._userModel.find_one_by_id(user_id).then((user) => {
+        if (!user) resolve(false);
+        else
+          compare(password, user.password).then((isValid) => {
+            if (isValid) resolve(true);
+            else resolve(false);
+          });
+      });
+    });
+  }
 }
