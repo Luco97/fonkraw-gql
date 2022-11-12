@@ -81,6 +81,15 @@ export class UserModelService {
       .getOne();
   }
 
+  find_one_by_id(id: number): Promise<UserModel> {
+    return this._userRepo
+      .createQueryBuilder('user')
+      .select(['user.email', 'user.username', 'user.password'])
+      .leftJoinAndSelect('user.role', 'role')
+      .where('user.id = :id', { id })
+      .getOne();
+  }
+
   // if user.author_profile exist then cannot create another author_profile
   // author_check(parameters: { user_id: number }) {
   //   const { user_id } = parameters;
