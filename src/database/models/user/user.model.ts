@@ -38,6 +38,10 @@ export class UserModel {
   @Column({ type: 'varchar', nullable: true })
   image_url: string;
 
+  @Field(() => String, { nullable: true })
+  @Column({ type: 'varchar', length: '400', nullable: true })
+  description: string;
+
   @Column({
     type: 'varchar',
     length: 60,
