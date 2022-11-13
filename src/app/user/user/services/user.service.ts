@@ -133,12 +133,15 @@ export class UserService {
           this._userModel.update_user_description({ user_id, description }),
         );
       }
-      Promise.all(promises).then(() => {
-        resolve({
-          status: HttpStatus.OK,
-          message: `succefully updated ${value_updated}`,
+      if (!promises.length)
+        resolve({ status: HttpStatus.OK, message: 'nothing change' });
+      else
+        Promise.all(promises).then(() => {
+          resolve({
+            status: HttpStatus.OK,
+            message: `succefully updated ${value_updated}`,
+          });
         });
-      });
     });
   }
 
@@ -156,6 +159,36 @@ export class UserService {
             else resolve(false);
           });
       });
+    });
+  }
+
+  update_pass(parameters: {
+    user_id: number;
+    password: string;
+  }): Promise<RegisterOutput> {
+    const { password, user_id } = parameters;
+    return new Promise<RegisterOutput>((resolve, reject) => {
+      this.confirm_pass({ user_id, password }).then((valid) => {
+        if (!valid)
+          resolve({
+            status: HttpStatus.NOT_ACCEPTABLE,
+            message: 'something was wrong',
+          });
+        else
+          this._userModel.update_user_password({ user_id, password }).then(() =>
+            resolve({
+              status: HttpStatus.ACCEPTED,
+              message: 'change password complete',
+            }),
+          );
+      });
+      // this._userModel.find_one_by_id(user_id).then((user) => {
+      //   if (!user) resolve({ status: HttpStatus.NOT_ACCEPTABLE, message: 'something' });
+      //   else
+      //     this._userModel
+      //       .update_user_password({ user_id, password })
+      //       .then(() => resolve({}));
+      // });
     });
   }
 }
