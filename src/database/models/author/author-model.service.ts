@@ -14,11 +14,11 @@ export class AuthorModelService {
   find_all(parameters: {
     skip: number;
     take: number;
-    name: string;
+    alias: string;
     orderProperty: string;
     order: 'ASC' | 'DESC';
   }): Promise<[AuthorModel[], number]> {
-    const { order, orderProperty, skip, take, name } = parameters;
+    const { order, orderProperty, skip, take, alias } = parameters;
     const orderBy: string = `author.${
       ['alias', 'create_at', 'mangas_count'].includes(orderProperty)
         ? orderProperty
@@ -35,7 +35,7 @@ export class AuthorModelService {
           (qb) => qb.orderBy('cnt'),
         )
         // todo: where con LOWER('%nombre%') para buscador de autores
-        .where('LOWER(author.alias) = :name', { name: `%${name}%` })
+        .where('LOWER(author.alias) like LOWER(:alias)', { alias: `${alias}%` })
         .orderBy(orderBy, ['ASC', 'DESC'].includes(order) ? order : 'ASC')
         .take(take || 10)
         .skip(skip || 0)
