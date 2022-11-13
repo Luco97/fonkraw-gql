@@ -1,10 +1,5 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { ObjectType } from '@nestjs/graphql';
+import { response } from '@utils/response.output';
 
 @ObjectType({ description: 'output object of register_user' })
-export class RegisterOutput {
-  @Field(() => Number, { description: 'status response' })
-  status: number;
-
-  @Field(() => String, { description: 'message for extra info' })
-  message: string;
-}
+export class RegisterOutput extends response {}
