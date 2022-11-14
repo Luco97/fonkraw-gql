@@ -15,5 +15,6 @@ export class RegisterInput {
   username: string;
 
   @Field(() => String, { description: 'password for the user' })
+  @MinLength(7)
   password: string;
 }
