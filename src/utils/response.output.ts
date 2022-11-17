@@ -15,4 +15,11 @@ export class response {
     description: 'status response',
   })
   status?: Number;
+
+  @Field(() => String, {
+    nullable: true,
+    defaultValue: '{}',
+    description: 'extra info, anything or json object',
+  })
+  extra?: string;
 }
