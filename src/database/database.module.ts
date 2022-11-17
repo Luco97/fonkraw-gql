@@ -62,20 +62,19 @@ import { EmailVerifyModel } from './models/email-verify/email-verify.model';
             : {},
       }),
     }),
+    //   repos
+    // TypeOrmModule.forFeature([
+    //   RoleModel,
+    //   UserModel,
+    //   MangaModel,
+    //   GenreModel,
+    //   AuthorModel,
+    //   InviteModel,
+    //   CommentModel,
+    //   LanguageModel,
+    //   EmailVerifyModel,
+    // ]),
   ],
-  //   repos
-  //   TypeOrmModule.forFeature([
-  //     RoleModel,
-  //     UserModel,
-  //     MangaModel,
-  //     GenreModel,
-  //     AuthorModel,
-  //     InviteModel,
-  //     CommentModel,
-  //     LanguageModel,
-  //     EmailVerifyModel,
-  //   ]),
-  // ],
   // providers: [
   //   RoleModelService,
   //   UserModelService,
