@@ -13,11 +13,14 @@ export class UpdateGenresInput {
   drop_genres: GenreModel[];
 }
 
-// @InputType()
-// export class UpdateStatusInput {
-//   @Field(() => Number)
-//   manga_id: number;
-// }
+@InputType()
+export class UpdateStatusInput {
+  @Field(() => Number)
+  manga_id: number;
+
+  @Field(() => Boolean)
+  status: boolean;
+}
 
 @InputType()
 export class UpdateInput {
