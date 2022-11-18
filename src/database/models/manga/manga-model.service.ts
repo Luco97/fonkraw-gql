@@ -368,18 +368,26 @@ export class MangaModelService {
   }
 
   find_editables(parameters: {
+    user_id: number;
     skip: number;
     take: number;
-    user_id: number;
+    orderProperty: string;
+    order: 'ASC' | 'DESC';
     // manga_id: number;
   }): Promise<[MangaModel[], number]> {
-    const { user_id, skip, take } = parameters;
+    const { user_id, skip, take, order, orderProperty } = parameters;
+    const orderBy: string = `items.${
+      ['title', 'pages', 'created_at', 'favorites_user'].includes(orderProperty)
+        ? orderProperty
+        : 'createdAt'
+    }`;
+    
     return this._mangaRepo
       .createQueryBuilder('manga')
       .leftJoin('manga.creator', 'creator')
       .leftJoin('creator.user', 'user')
       .where('user.id = :user_id', { user_id })
-      .orderBy('manga.created_at', 'ASC')
+      .orderBy(orderBy, ['ASC', 'DESC'].includes(order) ? order : 'ASC')
       .take(take || 10)
       .skip(skip || 0)
       .getManyAndCount();
