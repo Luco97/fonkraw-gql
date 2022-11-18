@@ -70,6 +70,7 @@ export class MangaModel {
   @JoinTable()
   genres: GenreModel[];
 
+  @Field(() => [UserModel], { nullable: true, defaultValue: [] })
   @ManyToMany(() => UserModel, (user) => user.mangas)
   users: UserModel[];
 
