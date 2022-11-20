@@ -53,11 +53,21 @@ export class MangaModelService {
         'commentarious',
         (qb) => qb.orderBy('cnt'),
       )
-      .where('LOWER(manga.title) = LOWER(:search)', { search: `%${search}%` })
-      .orWhere('LOWER(genres.name) = LOWER(:search)', { search: `%${search}%` })
-      .orWhere('LOWER(authors.alias) = LOWER(:search)', {
-        search: `%${search}%`,
-      })
+      .where(
+        new Brackets((qb) =>
+          qb
+            .where('LOWER(manga.title) = LOWER(:search)', {
+              search: `%${search}%`,
+            })
+            .orWhere('LOWER(genres.name) = LOWER(:search)', {
+              search: `%${search}%`,
+            })
+            .orWhere('LOWER(authors.alias) = LOWER(:search)', {
+              search: `%${search}%`,
+            }),
+        ),
+      )
+      .andWhere('manga.active = :status', { status: true })
       .orderBy(orderBy, ['ASC', 'DESC'].includes(order) ? order : 'ASC')
       .take(take || 10)
       .skip(skip || 0)
@@ -381,7 +391,7 @@ export class MangaModelService {
         ? orderProperty
         : 'createdAt'
     }`;
-    
+
     return this._mangaRepo
       .createQueryBuilder('manga')
       .leftJoin('manga.creator', 'creator')
