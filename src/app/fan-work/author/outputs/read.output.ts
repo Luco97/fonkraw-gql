@@ -3,7 +3,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { response } from '@utils/response.output';
 import { AuthorModel } from '@database/models/author';
 
-@ObjectType()
+@ObjectType('read_all_authors')
 export class ReadAllOutput extends response {
   @Field(() => [AuthorModel], { nullable: true })
   authors: AuthorModel[];
