@@ -31,3 +31,10 @@ export class findAll {
   })
   order: 'ASC' | 'DESC';
 }
+
+export const find_all_default: findAll = {
+  take: 10,
+  skip: 0,
+  orderBy: 'created_at',
+  order: 'ASC',
+};
