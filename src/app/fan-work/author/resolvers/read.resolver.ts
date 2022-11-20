@@ -1,7 +1,9 @@
 import { HttpStatus } from '@nestjs/common';
 import { Args, Context, Query, Resolver } from '@nestjs/graphql';
 
+import { find_all_default } from '@utils/find-all.input';
 import { AuthorModelService } from '@database/models/author';
+
 import { ReadInput } from '../inputs/read.input';
 import { ReadAllOutput, ReadOneOutput } from '../outputs/read.output';
 
@@ -15,10 +17,7 @@ export class ReadResolver {
       // variable not defined
       defaultValue: {
         alias: '',
-        take: 10,
-        skip: 0,
-        orderBy: 'created_at',
-        order: 'ASC',
+        ...find_all_default,
       },
       nullable: true,
     })
@@ -26,10 +25,7 @@ export class ReadResolver {
   ): Promise<ReadAllOutput> {
     const { order, orderBy, skip, take, alias } = readAuthors || {
       alias: '',
-      take: 10,
-      skip: 0,
-      orderBy: 'created_at',
-      order: 'ASC',
+      ...find_all_default,
     }; // variable or Args 'options': null;
     return new Promise<ReadAllOutput>((resolve, reject) => {
       this._authorModel
