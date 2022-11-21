@@ -45,6 +45,7 @@ export class UserModel {
   @Column({
     type: 'varchar',
     length: 60,
+    select: false,
   })
   email: string;
 
