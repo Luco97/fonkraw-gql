@@ -38,7 +38,7 @@ export class AuthService {
       if (payload?.context?.username && payload?.context?.extra)
         return payload?.context?.extra;
     } catch (error) {
-      return -1;
+      return 0;
     }
   }
 
