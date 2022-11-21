@@ -14,11 +14,12 @@ export class MangaModelService {
   find_all(parameters: {
     skip: number;
     take: number;
-    search: string;
     orderProperty: string;
     order: 'ASC' | 'DESC';
+    search?: string;
+    user_id?: number;
   }): Promise<[MangaModel[], number]> {
-    const { order, orderProperty, skip, take, search } = parameters;
+    const { order, orderProperty, skip, take, search, user_id } = parameters;
     const orderBy: string = `items.${
       ['title', 'pages', 'created_at', 'favorites_user'].includes(orderProperty)
         ? orderProperty
@@ -41,6 +42,9 @@ export class MangaModelService {
         (qb) => qb.orderBy('cnt'),
       )
       .leftJoinAndSelect('manga.language', 'language')
+      .leftJoinAndSelect('manga.users', 'users', 'users.id = :user_id', {
+        user_id: user_id || 0,
+      })
       .loadRelationCountAndMap(
         'manga.favorites_user',
         'manga.users',
