@@ -2,20 +2,25 @@ import { Args, Context, Query, Resolver } from '@nestjs/graphql';
 
 import { Request } from 'express';
 
+import { HttpStatus, UseGuards } from '@nestjs/common';
+
 import { AuthService } from '@shared/auth';
+import { AuthGuard } from '@guard/auth.guard';
 import { find_all_default } from '@utils/find-all.input';
 import { MangaModelService } from '@database/models/manga';
+import { AuthorModelService } from '@database/models/author';
 
-import { ReadInput } from '../inputs/read.input';
 import { ReadAllOutput } from '../outputs/read.output';
-import { HttpStatus } from '@nestjs/common';
+import { ReadInput, ReadEditablesInput } from '../inputs/read.input';
 
 @Resolver()
 export class ReadResolver {
   constructor(
     private _authService: AuthService,
     private _mangaModel: MangaModelService,
+    private _authorModel: AuthorModelService,
   ) {}
+
   @Query(() => ReadAllOutput, { name: 'find_all_manga' })
   find_all(
     @Args('options', {
@@ -52,6 +57,50 @@ export class ReadResolver {
             status: HttpStatus.OK,
           }),
         ),
+    );
+  }
+
+  @Query(() => [ReadAllOutput])
+  @UseGuards(AuthGuard)
+  find_editables(
+    @Args('options', {
+      nullable: true,
+      defaultValue: find_all_default,
+    })
+    readInput: ReadEditablesInput,
+    @Context() context,
+  ) {
+    const req: Request = context.req;
+    const token: string = req.headers?.authorization;
+    const user_id: number = this._authService.userID(token);
+
+    const { order, orderBy, skip, take } = readInput || find_all_default;
+    return new Promise<ReadAllOutput>((resolve, reject) =>
+      Promise.all([
+        this._mangaModel.find_editables({
+          skip,
+          take,
+          order,
+          orderProperty: orderBy,
+          user_id,
+        }),
+        this._authorModel.author_check({ user_id }),
+      ]).then(([[mangas, count], author]) => {
+        if (!author)
+          resolve({
+            mangas,
+            count,
+            message: `you havent an author associate`,
+            status: HttpStatus.OK,
+          });
+        else
+          resolve({
+            mangas,
+            count,
+            message: `total mangas created by ${author.alias}: ${count}`,
+            status: HttpStatus.OK,
+          });
+      }),
     );
   }
 }
