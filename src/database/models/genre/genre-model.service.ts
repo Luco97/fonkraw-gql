@@ -27,4 +27,11 @@ export class GenreModelService {
       )
       .getOne();
   }
+
+  find_many_by_id(genres_id: number[]): Promise<GenreModel[]> {
+    return this._genreRepo
+      .createQueryBuilder('genre')
+      .where('genre.id IN (:...genres_id)', { genres_id })
+      .getMany();
+  }
 }
