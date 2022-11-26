@@ -1,1 +1,13 @@
-export class ReadInput {}
+import { Field, InputType } from '@nestjs/graphql';
+
+@InputType()
+export class ReadAllInput {
+  @Field(() => Number)
+  manga_id: number;
+
+  @Field(() => Number, { defaultValue: 5 })
+  take: number;
+
+  @Field(() => Number, { defaultValue: 0 })
+  skip: number;
+}
