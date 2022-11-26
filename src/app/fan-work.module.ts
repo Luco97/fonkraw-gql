@@ -18,8 +18,11 @@ import { LanguageModule } from './fan-work/language/language.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'types.gql',
-      persistedQueries: false, // heroku deploy
-      cache: 'bounded', // heroku deploy
+      // persistedQueries: false, // heroku deploy
+      // cache: 'bounded', // heroku deploy
+      buildSchemaOptions: {
+        dateScalarMode: 'timestamp',
+      },
     }),
     AuthModule,
     DatabaseModule,
