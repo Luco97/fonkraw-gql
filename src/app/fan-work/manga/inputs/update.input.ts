@@ -6,11 +6,11 @@ export class UpdateGenresInput {
   @Field(() => Number)
   manga_id: number;
 
-  @Field(() => [GenreModel])
-  add_genres: GenreModel[];
+  @Field(() => [Number])
+  add_genres: number[];
 
-  @Field(() => [GenreModel])
-  drop_genres: GenreModel[];
+  @Field(() => [Number])
+  drop_genres: number[];
 }
 
 @InputType()
