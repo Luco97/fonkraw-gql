@@ -68,15 +68,14 @@ export class UpdateResolver {
       this._mangaModel.find_editable({ manga_id, user_id }).then((manga) => {
         if (!manga) resolve({ message: ``, status: HttpStatus.OK });
         else {
-          let add_genres_ids: number[] = add_genres.map<number>(
-            (element) => element.id,
-          );
+          // get genres that exists with those ids
           this._genreModel
-            .find_many_by_id(add_genres_ids)
+            .find_many_by_id([...new Set(add_genres)])
             .then((new_genres) => {
               let new_genres_ids: number[] = new_genres.map<number>(
                 (element) => element.id,
               );
+              // Actual genres with the manga
               let drop_genres_ids: number[] = manga.genres.map<number>(
                 (element) => element.id,
               );
