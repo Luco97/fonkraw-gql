@@ -15,7 +15,7 @@ export class GenreModel {
   @Column({ type: 'varchar' })
   name: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Column({ type: 'varchar', nullable: true })
   description: string;
 
