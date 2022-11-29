@@ -10,8 +10,12 @@ import { find_all_default } from '@utils/find-all.input';
 import { MangaModelService } from '@database/models/manga';
 import { AuthorModelService } from '@database/models/author';
 
-import { ReadAllOutput } from '../outputs/read.output';
-import { ReadInput, ReadEditablesInput } from '../inputs/read.input';
+import { ReadAllOutput, ReadOneOutput } from '../outputs/read.output';
+import {
+  ReadAllInput,
+  ReadEditablesInput,
+  ReadOneInput,
+} from '../inputs/read.input';
 
 @Resolver()
 export class ReadResolver {
@@ -27,7 +31,7 @@ export class ReadResolver {
       nullable: true,
       defaultValue: { search: '', ...find_all_default },
     })
-    readInput: ReadInput,
+    readInput: ReadAllInput,
     @Context() context,
   ): Promise<ReadAllOutput> {
     const req: Request = context.req;
@@ -102,5 +106,32 @@ export class ReadResolver {
           });
       }),
     );
+  }
+
+  @Query(() => ReadOneOutput)
+  find_one(
+    @Args('manga_id') manga_id: number,
+    @Context() context,
+  ): Promise<ReadOneOutput> {
+    const req: Request = context.req;
+    const token: string = req.headers?.authorization;
+    const user_id: number = this._authService.userID(token);
+
+    return new Promise<ReadOneOutput>((resolve, reject) => {
+      this._mangaModel
+        .find_one({ id: manga_id, user_id })
+        .then((manga) =>
+          resolve({ manga, message: ``, status: HttpStatus.OK }),
+        );
+    });
+  }
+
+  // Obtener mangas relacionados
+  // autor mas favoritos
+  // ultimo(s) creado
+  // mejor del genero o nose ahi se me ocurrira
+  @Query(() => ReadAllOutput)
+  related_mangas() {
+    return new Promise<ReadAllOutput>((resolve, reject) => {});
   }
 }
