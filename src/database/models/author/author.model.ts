@@ -27,7 +27,7 @@ export class AuthorModel {
   @Column({ type: 'varchar' })
   alias: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Column({ type: 'varchar', length: '1500' })
   description: string;
 
