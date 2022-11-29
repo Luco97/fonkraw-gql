@@ -78,9 +78,13 @@ export class MangaModelService {
       .getManyAndCount();
   }
 
-  find_one(id: number): Promise<MangaModel> {
+  find_one(parameters: { id: number; user_id: number }): Promise<MangaModel> {
+    const { id, user_id } = parameters;
     return this._mangaRepo
       .createQueryBuilder('manga')
+      .leftJoinAndSelect('manga.users', 'users', 'users.id = :user_id', {
+        user_id,
+      })
       .leftJoinAndSelect('manga.genres', 'genres')
       .loadRelationCountAndMap(
         'genres.mangas_count',
@@ -471,5 +475,48 @@ export class MangaModelService {
       .where('manga.id = :manga_id', { manga_id })
       .andWhere('authors.id = :author_id', { author_id })
       .getCount();
+  }
+
+  find_relateds(parameters: { take: number; author_alias: string }) {
+    const { take, author_alias } = parameters;
+    return this._mangaRepo
+      .createQueryBuilder('manga')
+      .leftJoinAndSelect('manga.genres', 'genres')
+      .loadRelationCountAndMap(
+        'genres.mangas_count',
+        'genres.mangas',
+        'tags',
+        (qb) => qb.orderBy('cnt'),
+      )
+      .leftJoinAndSelect('manga.authors', 'authors')
+      .loadRelationCountAndMap(
+        'authors.mangas_count',
+        'authors.mangas',
+        'artists',
+        (qb) => qb.orderBy('cnt'),
+      )
+      .loadRelationCountAndMap(
+        'manga.favorites_user',
+        'manga.users',
+        'favorites',
+        (qb) => qb.orderBy('cnt'),
+      )
+      .loadRelationCountAndMap(
+        'manga.commentaries',
+        'manga.comments',
+        'commentarious',
+        (qb) => qb.orderBy('cnt'),
+      )
+      .loadRelationCountAndMap(
+        'manga.favorites_user',
+        'manga.users',
+        'favorites',
+        (qb) => qb.orderBy('cnt'),
+      )
+      .leftJoin('manga.creator', 'creator')
+      .where(`LOWER(creator.alias) = LOWER(:author_alias)`, { author_alias })
+      .orderBy('favorites', 'DESC')
+      .take(take || 2)
+      .getManyAndCount();
   }
 }
