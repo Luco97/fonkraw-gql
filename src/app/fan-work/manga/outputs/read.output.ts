@@ -14,5 +14,5 @@ export class ReadAllOutput extends response {
 @ObjectType('read_one_manga')
 export class ReadOneOutput extends response {
   @Field(() => MangaModel)
-  mangas: MangaModel;
+  manga: MangaModel;
 }
