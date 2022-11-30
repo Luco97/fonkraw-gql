@@ -477,10 +477,18 @@ export class MangaModelService {
       .getCount();
   }
 
-  find_relateds(parameters: { take: number; author_alias: string }) {
-    const { take, author_alias } = parameters;
+  find_relateds(parameters: {
+    take: number;
+    author_alias: string;
+    author_id?: number;
+    user_id?: number;
+  }) {
+    const { take, author_alias, author_id, user_id } = parameters;
     return this._mangaRepo
       .createQueryBuilder('manga')
+      .leftJoinAndSelect('manga.users', 'users', 'users.id = :user_id', {
+        user_id: user_id || 0,
+      })
       .leftJoinAndSelect('manga.genres', 'genres')
       .loadRelationCountAndMap(
         'genres.mangas_count',
@@ -515,6 +523,7 @@ export class MangaModelService {
       )
       .leftJoin('manga.creator', 'creator')
       .where(`LOWER(creator.alias) = LOWER(:author_alias)`, { author_alias })
+      .orWhere('creator.id = :author_id', { author_id })
       .orderBy('favorites', 'DESC')
       .take(take || 2)
       .getManyAndCount();
