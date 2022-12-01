@@ -75,7 +75,7 @@ export class UserModelService {
   find_one_by_email(email: string): Promise<UserModel> {
     return this._userRepo
       .createQueryBuilder('user')
-      .select(['user.email', 'user.username', 'user.password'])
+      .select(['user.id', 'user.email', 'user.username', 'user.password'])
       .leftJoinAndSelect('user.role', 'role')
       .where('user.email = :email', { email })
       .getOne();
