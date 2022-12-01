@@ -1,3 +1,5 @@
+import { Field, ObjectType } from '@nestjs/graphql';
+
 import {
   Column,
   Entity,
@@ -9,13 +11,13 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
   OneToMany,
+  AfterLoad,
 } from 'typeorm';
 
 import { UserModel } from '../user/user.model';
 import { GenreModel } from '../genre/genre.model';
 import { AuthorModel } from '../author/author.model';
 import { LanguageModel } from '../language/language.model';
-import { Field, ObjectType } from '@nestjs/graphql';
 import { CommentModel } from '../comment/comment.model';
 
 @Entity()
@@ -40,6 +42,10 @@ export class MangaModel {
   @Field(() => Boolean)
   @Column({ type: 'boolean', default: false })
   active: boolean;
+
+  @Field(() => Boolean)
+  @Column({ type: 'boolean', default: false })
+  highlight: boolean;
 
   @Field(() => Date)
   @CreateDateColumn({ type: 'timestamp' })
@@ -83,4 +89,9 @@ export class MangaModel {
 
   @Field(() => Number, { nullable: true })
   commentaries?: number;
+
+  @AfterLoad()
+  private sort() {
+    this.authors.sort((a, b) => b.mangas_count - a.mangas_count);
+  }
 }
