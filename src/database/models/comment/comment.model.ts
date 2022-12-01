@@ -11,7 +11,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 
 import { MangaModel } from '../manga/manga.model';
 
-@Entity()
+@Entity({ orderBy: { created_at: 'ASC' } })
 @ObjectType()
 export class CommentModel {
   @Field(() => Number)
