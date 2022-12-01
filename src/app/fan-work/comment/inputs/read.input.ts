@@ -1,6 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 
-@InputType()
+@InputType('read_all_comments')
 export class ReadAllInput {
   @Field(() => Number)
   manga_id: number;
