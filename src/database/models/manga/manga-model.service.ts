@@ -142,6 +142,14 @@ export class MangaModelService {
     return this._mangaRepo.update({ id: manga_id }, { active: status });
   }
 
+  update_highlight(parameters: {
+    status: boolean;
+    manga_id: number;
+  }): Promise<UpdateResult> {
+    const { status, manga_id } = parameters;
+    return this._mangaRepo.update({ id: manga_id }, { highlight: status });
+  }
+
   set_genres(
     manga_id: number,
     genres_id: number[],
