@@ -76,7 +76,7 @@ export class MangaModel {
   @JoinTable()
   genres: GenreModel[];
 
-  @Field(() => [UserModel], { nullable: true, defaultValue: [] })
+  // @Field(() => [UserModel], { nullable: true, defaultValue: [] })
   @ManyToMany(() => UserModel, (user) => user.mangas)
   users: UserModel[];
 
@@ -90,8 +90,16 @@ export class MangaModel {
   @Field(() => Number, { nullable: true })
   commentaries?: number;
 
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  is_favorite?: boolean;
+
   @AfterLoad()
   private sort() {
     this.authors.sort((a, b) => b.mangas_count - a.mangas_count);
+  }
+
+  @AfterLoad()
+  private set_favorite() {
+    if (this.users.length) this.is_favorite = true;
   }
 }
