@@ -2,7 +2,7 @@ import { Field, InputType } from '@nestjs/graphql';
 
 import { findAll } from '@utils/find-all.input';
 
-@InputType()
+@InputType('read_all_mangas')
 export class ReadAllInput extends findAll {
   @Field(() => String, { nullable: true, defaultValue: '' })
   search?: string;
@@ -15,4 +15,13 @@ export class ReadEditablesInput extends findAll {}
 export class ReadOneInput {
   @Field(() => Number)
   manga_id: number;
+}
+
+@InputType()
+export class ReadRelatedInput {
+  @Field(() => Number, { nullable: true })
+  author_id: number;
+
+  @Field(() => String)
+  author_alias: string;
 }
