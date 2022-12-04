@@ -1,3 +1,5 @@
+import { Field, ObjectType } from '@nestjs/graphql';
+
 import {
   Entity,
   Column,
@@ -7,7 +9,6 @@ import {
 } from 'typeorm';
 
 import { UserModel } from '../user/user.model';
-import { Field, ObjectType } from '@nestjs/graphql';
 
 import { MangaModel } from '../manga/manga.model';
 
@@ -35,6 +36,10 @@ export class CommentModel {
   @ManyToOne(() => MangaModel, (manga) => manga.comments, { nullable: false })
   manga: MangaModel;
 
+  @Field(() => UserModel, { nullable: false })
   @ManyToOne(() => UserModel, { nullable: false })
   user: UserModel;
+
+  @Field(() => Boolean, { defaultValue: false })
+  deletable: boolean;
 }
