@@ -116,6 +116,14 @@ export class MangaModelService {
       .getOne();
   }
 
+  check_one(id: number, status: boolean = true): Promise<number> {
+    return this._mangaRepo
+      .createQueryBuilder('manga')
+      .where('manga.id = :id', { id })
+      .andWhere('manga.active = :status', { status })
+      .getCount();
+  }
+
   create(parameters: {
     title: string;
     pages: number;
