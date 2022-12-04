@@ -22,9 +22,7 @@ export class CommentModelService {
     return this._commentRepo
       .createQueryBuilder('comment')
       .leftJoin('comment.manga', 'manga')
-      .leftJoinAndSelect('comment.user', 'user', 'user.id = :user_id', {
-        user_id,
-      })
+      .leftJoinAndSelect('comment.user', 'user')
       .where('manga.id = :manga_id', { manga_id })
       .orderBy('comment.created_at', 'ASC')
       .take(take || 10)
@@ -46,7 +44,7 @@ export class CommentModelService {
       }),
     );
   }
-
+  // Probar si id no existe :eyes:
   delete(comment_id: number): Promise<UpdateResult> {
     return this._commentRepo.softDelete({ id: comment_id });
   }
