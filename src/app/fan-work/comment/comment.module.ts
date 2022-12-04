@@ -1,15 +1,18 @@
 import { Module } from '@nestjs/common';
+
 // Modules
+import { AuthModule } from '@shared/auth';
+import { UserModelModule } from '@database/models/user';
+import { MangaModelModule } from '@database/models/manga';
 import { CommentModelModule } from '@database/models/comment';
 
 // Resolvers
 import { GetResolver } from './resolvers/get.resolver';
 import { CreateResolver } from './resolvers/create.resolver';
 import { DeleteResolver } from './resolvers/delete.resolver';
-import { AuthModule } from '@shared/auth';
 
 @Module({
-  imports: [CommentModelModule, AuthModule],
+  imports: [CommentModelModule, AuthModule, MangaModelModule, UserModelModule],
   providers: [CreateResolver, GetResolver, DeleteResolver],
 })
 export class CommentModule {}
