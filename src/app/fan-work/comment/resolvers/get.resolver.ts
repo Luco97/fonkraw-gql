@@ -1,12 +1,13 @@
-import { CommentModelService } from '@database/models/comment';
+import { HttpStatus } from '@nestjs/common';
 import { Args, Context, Query, Resolver } from '@nestjs/graphql';
-import { AuthService } from '@shared/auth';
 
 import { Request } from 'express';
 
+import { AuthService } from '@shared/auth';
+import { CommentModel, CommentModelService } from '@database/models/comment';
+
 import { ReadAllInput } from '../inputs/read.input';
 import { ReadAllOutput } from '../outputs/read.output';
-import { HttpStatus } from '@nestjs/common';
 
 @Resolver()
 export class GetResolver {
@@ -33,7 +34,10 @@ export class GetResolver {
         .then(([comments, count]) =>
           resolve({
             count,
-            comments,
+            comments: comments.map<CommentModel>((element) => ({
+              ...element,
+              deletable: element.user.id == user_id,
+            })),
             status: HttpStatus.OK,
             message: `total comments: ${count}`,
           }),
