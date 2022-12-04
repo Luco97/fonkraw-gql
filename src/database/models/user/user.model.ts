@@ -58,15 +58,15 @@ export class UserModel {
   @Field(() => Date)
   @CreateDateColumn({
     type: 'timestamp',
-    select: false,
+    // select: false,
   })
-  createDate: Date;
+  created_at: Date;
 
   @UpdateDateColumn({
     type: 'timestamp',
     select: false,
   })
-  updateDate: Date;
+  updated_at: Date;
 
   @ManyToMany(() => MangaModel, (manga) => manga.users, {
     nullable: true,
