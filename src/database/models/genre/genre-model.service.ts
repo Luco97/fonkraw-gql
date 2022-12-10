@@ -15,6 +15,7 @@ export class GenreModelService {
       .loadRelationCountAndMap('genre.count', 'genre.mangas', 'mango', (qb) =>
         qb.orderBy('cnt'),
       )
+      .orderBy('genre.name', 'ASC')
       .getManyAndCount();
   }
 
