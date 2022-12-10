@@ -54,6 +54,37 @@ export class UpdateResolver {
 
   @Mutation(() => UpdateOutput)
   @UseGuards(AuthGuard)
+  update_highlight(
+    @Args('manga_id') parameters: UpdateStatusInput,
+    @Context() context,
+  ): Promise<UpdateOutput> {
+    const req: Request = context.req;
+    const token: string = req.headers?.authorization;
+    const user_id: number = this._authService.userID(token);
+
+    const { manga_id, status } = parameters;
+
+    return new Promise<UpdateOutput>((resolve, reject) => {
+      this._mangaModel.find_editable({ manga_id, user_id }).then((manga) => {
+        if (!manga)
+          resolve({
+            message: `can't edit manga with id = ${manga_id}, you aren't the creator`,
+            status: HttpStatus.OK,
+          });
+        else
+          this._mangaModel.update_highlight({ manga_id, status }).then((result) =>
+            resolve({
+              message: 'update should be ok',
+              status: HttpStatus.OK,
+              extra: JSON.stringify(result),
+            }),
+          );
+      });
+    });
+  }
+
+  @Mutation(() => UpdateOutput)
+  @UseGuards(AuthGuard)
   update_genres(
     @Args('parameters') updateInput: UpdateGenresInput,
     @Context() context,
