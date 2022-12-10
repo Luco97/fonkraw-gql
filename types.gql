@@ -5,23 +5,23 @@
 type GenreModel {
   id: Float!
   name: String!
-  description: String!
+  description: String
   mangas_count: Float
 }
 
 type AuthorModel {
   id: Float!
   alias: String!
-  description: String!
-  create_at: DateTime!
-  update_at: DateTime!
+  description: String
+  create_at: Timestamp!
+  update_at: Timestamp!
   mangas_count: Float
 }
 
 """
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+`Date` type as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
 """
-scalar DateTime
+scalar Timestamp
 
 type LanguageModel {
   id: Float!
@@ -30,47 +30,289 @@ type LanguageModel {
   country_flag: String!
 }
 
+type CommentModel {
+  id: Float!
+  comment: String!
+  created_at: Timestamp!
+  user: UserModel!
+  deletable: Boolean!
+}
+
 type MangaModel {
   id: Float!
   title: String!
   pages: Float!
   cover_url: String
   active: Boolean!
-  created_at: DateTime!
-  updated_at: DateTime!
+  highlight: Boolean!
+  created_at: Timestamp!
+  updated_at: Timestamp!
   language: LanguageModel
   authors: [AuthorModel!]!
   genres: [GenreModel!]
   favorites_user: Float
   commentaries: Float
+  is_favorite: Boolean
+}
+
+type UserModel {
+  username: String!
+  image_url: String
+  description: String
+  created_at: Timestamp!
+  author_profile: AuthorModel
+  mangas_favorites: Float
+}
+
+type response {
+  """message for extra info"""
+  message: String
+
+  """status response"""
+  status: Float
+
+  """extra info, anything or json object"""
+  extra: String
+}
+
+"""user update output"""
+type update_user_info_output {
+  """message for extra info"""
+  message: String
+
+  """status response"""
+  status: Float
+
+  """extra info, anything or json object"""
+  extra: String
+  imagen_url: String
+  description: String
 }
 
 """output object of register_user"""
 type RegisterOutput {
-  """status response"""
-  status: Float!
-
   """message for extra info"""
-  message: String!
+  message: String
+
+  """status response"""
+  status: Float
+
+  """extra info, anything or json object"""
+  extra: String
 }
 
 """output object in sign in mutation"""
 type SignInOutput {
-  """status response"""
-  status: Float!
-
   """message for extra info"""
-  message: String!
+  message: String
+
+  """status response"""
+  status: Float
+
+  """extra info, anything or json object"""
+  extra: String
   token: String
 }
 
+type read_all_manga {
+  """message for extra info"""
+  message: String
+
+  """status response"""
+  status: Float
+
+  """extra info, anything or json object"""
+  extra: String
+  mangas: [MangaModel!]!
+  count: Float!
+}
+
+type read_one_manga {
+  """message for extra info"""
+  message: String
+
+  """status response"""
+  status: Float
+
+  """extra info, anything or json object"""
+  extra: String
+  manga: MangaModel!
+}
+
+type create_manga_output {
+  """message for extra info"""
+  message: String
+
+  """status response"""
+  status: Float
+
+  """extra info, anything or json object"""
+  extra: String
+  manga: MangaModel
+}
+
+type UpdateOutput {
+  """message for extra info"""
+  message: String
+
+  """status response"""
+  status: Float
+
+  """extra info, anything or json object"""
+  extra: String
+}
+
+type read_all_authors {
+  """message for extra info"""
+  message: String
+
+  """status response"""
+  status: Float
+
+  """extra info, anything or json object"""
+  extra: String
+  authors: [AuthorModel!]
+  count: Float!
+}
+
+type create_author_output {
+  """message for extra info"""
+  message: String
+
+  """status response"""
+  status: Float
+
+  """extra info, anything or json object"""
+  extra: String
+  author: AuthorModel!
+}
+
+type ReadAllOutput {
+  """message for extra info"""
+  message: String
+
+  """status response"""
+  status: Float
+
+  """extra info, anything or json object"""
+  extra: String
+  comments: [CommentModel!]!
+  count: Float!
+}
+
+type CreateOutput {
+  """message for extra info"""
+  message: String
+
+  """status response"""
+  status: Float
+
+  """extra info, anything or json object"""
+  extra: String
+  comment: CommentModel
+}
+
+type DeleteOutput {
+  """message for extra info"""
+  message: String
+
+  """status response"""
+  status: Float
+
+  """extra info, anything or json object"""
+  extra: String
+}
+
 type Query {
-  findAll: [MangaModel!]!
+  find_all_manga(options: read_all_mangas = {take: 10, skip: 0, orderBy: "created_at", order: "ASC", search: ""}): read_all_manga!
+  find_editables(options: ReadEditablesInput = {take: 10, skip: 0, orderBy: "created_at", order: "ASC"}): [read_all_manga!]!
+  find_one(manga_id: Float!): read_one_manga!
+  related_mangas(parameters: ReadRelatedInput!): read_all_manga!
+  find_all_authors(options: find_all_authors = {take: 10, skip: 0, orderBy: "created_at", order: "ASC", alias: ""}): read_all_authors!
+  find_one_author(author_id: Float!): read_all_authors!
+  find_all_comments(options: read_all_comments!): ReadAllOutput!
+}
+
+input read_all_mangas {
+  """quantity of items"""
+  take: Float = 10
+
+  """number of items to skip"""
+  skip: Float = 0
+
+  """field selected for order"""
+  orderBy: String = "create_at"
+
+  """if is ASCendent or DESCendent"""
+  order: String = "ASC"
+  search: String = ""
+}
+
+input ReadEditablesInput {
+  """quantity of items"""
+  take: Float = 10
+
+  """number of items to skip"""
+  skip: Float = 0
+
+  """field selected for order"""
+  orderBy: String = "create_at"
+
+  """if is ASCendent or DESCendent"""
+  order: String = "ASC"
+}
+
+input ReadRelatedInput {
+  author_id: Float
+  author_alias: String!
+}
+
+"""find all authors options"""
+input find_all_authors {
+  """quantity of items"""
+  take: Float = 10
+
+  """number of items to skip"""
+  skip: Float = 0
+
+  """field selected for order"""
+  orderBy: String = "create_at"
+
+  """if is ASCendent or DESCendent"""
+  order: String = "ASC"
+  alias: String = ""
+}
+
+input read_all_comments {
+  manga_id: Float!
+  take: Float = 5
+  skip: Float = 0
 }
 
 type Mutation {
+  update_user_info(update_info: update_user_info_input!): update_user_info_output!
+  confirm_password(update_pass: UpdatePasswordInput!): Boolean!
+  update_password(update_pass: UpdatePasswordInput!): RegisterOutput!
   sign_in(credentials: sign_in!): SignInOutput!
   register_user(user: register_user!): RegisterOutput!
+  create(author: CreateInput): create_author_output!
+  update_status(manga_id: UpdateStatusInput!): UpdateOutput!
+  update_highlight(manga_id: UpdateStatusInput!): UpdateOutput!
+  update_genres(parameters: UpdateGenresInput!): UpdateOutput!
+  update(author: UpdateInput): response!
+  create_comment(parameters: create_comment!): CreateOutput!
+  delete_comment(parameters: DeleteInput!): DeleteOutput!
+}
+
+"""update user input"""
+input update_user_info_input {
+  image_url: String
+  description: String
+}
+
+input UpdatePasswordInput {
+  """password for the user"""
+  password: String!
 }
 
 """sign in object (with email and password)"""
@@ -92,4 +334,34 @@ input register_user {
 
   """password for the user"""
   password: String!
+}
+
+input CreateInput {
+  alias: String!
+  description: String = ""
+}
+
+input UpdateStatusInput {
+  manga_id: Float!
+  status: Boolean!
+}
+
+input UpdateGenresInput {
+  manga_id: Float!
+  add_genres: [Float!]!
+  drop_genres: [Float!]!
+}
+
+input UpdateInput {
+  description: String!
+}
+
+input create_comment {
+  comment: String!
+  manga_id: Float!
+}
+
+input DeleteInput {
+  user_comment_id: Float!
+  comment_id: Float!
 }
