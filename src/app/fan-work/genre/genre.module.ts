@@ -1,7 +1,13 @@
 import { Module } from '@nestjs/common';
-import { ReadResolver } from './resolver/read.resolver';
+
+// Modules
+import { GenreModelModule } from '@database/models/genre';
+
+// Resolvers
+import { ReadResolver } from './resolvers/read.resolver';
 
 @Module({
-  providers: [ReadResolver]
+  imports: [GenreModelModule],
+  providers: [ReadResolver],
 })
 export class GenreModule {}
