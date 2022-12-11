@@ -11,4 +11,11 @@ export class LanguageModelService {
     @InjectRepository(LanguageModel)
     private _languageRepo: Repository<LanguageModel>,
   ) {}
+
+  find_all(): Promise<[LanguageModel[], number]> {
+    return this._languageRepo
+      .createQueryBuilder('language')
+      .orderBy('language.language', 'ASC')
+      .getManyAndCount();
+  }
 }
