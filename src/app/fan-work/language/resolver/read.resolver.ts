@@ -11,11 +11,14 @@ export class ReadResolver {
   @Query(() => ReadOutput)
   find_all_languages(): Promise<ReadOutput> {
     return new Promise<ReadOutput>((resolve, reject) =>
-      this._languageModel
-        .find_all()
-        .then(([languages, count]) =>
-          resolve({ count, languages, message: '', status: HttpStatus.OK }),
-        ),
+      this._languageModel.find_all().then(([languages, count]) =>
+        resolve({
+          count,
+          languages,
+          message: `languages found: ${count}`,
+          status: HttpStatus.OK,
+        }),
+      ),
     );
   }
 }
