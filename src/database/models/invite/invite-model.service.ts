@@ -35,9 +35,21 @@ export class InviteModelService {
     const { author_id, user_id } = parameters;
     return this._inviRepo
       .createQueryBuilder('invite')
-      .leftJoin('invite.to_author', 'to_author')
+      .leftJoinAndSelect('invite.to_author', 'to_author')
+      .loadRelationCountAndMap(
+        'to_author.mangas_count',
+        'to_author.mangas',
+        'mangos_to_author',
+        (qb) => qb.orderBy('cnt'),
+      )
       .leftJoin('to_author.user', 'user')
       .leftJoinAndSelect('invite.from_author', 'from_author')
+      .loadRelationCountAndMap(
+        'from_author.mangas_count',
+        'from_author.mangas',
+        'mangos_from_author',
+        (qb) => qb.orderBy('cnt'),
+      )
       .where('to_author.id = :author_id', { author_id })
       .andWhere('user.id = :user_id', { user_id })
       .andWhere('invite.status = :status', { status: false })
