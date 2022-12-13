@@ -15,10 +15,13 @@ import { SignInResolver } from './user/resolvers/sign-in.resolver';
 import { RegisterResolver } from './user/resolvers/register.resolver';
 
 // invite Resolvers
-import { ReadResolver } from './invite/resolver/read.resolver';
+import { GetResolver } from './invite/resolvers/get.resolver';
+import { CheckResolver } from './invite/resolvers/check.resolver';
+import { CreateResolver } from './invite/resolvers/create.resolver';
 
 // Services
 import { UserService } from './user/services/user.service';
+import { ValidateResolver } from './user/resolvers/validate.resolver';
 
 @Module({
   imports: [
@@ -32,12 +35,17 @@ import { UserService } from './user/services/user.service';
   ],
   providers: [
     // resolvers
+    // User
     UpdateResolver,
     SignInResolver,
     RegisterResolver,
-    ReadResolver,
+    // Invites
+    GetResolver,
+    CheckResolver,
+    CreateResolver,
     // services
     UserService,
+    ValidateResolver,
   ],
 })
 export class UserModule {}
