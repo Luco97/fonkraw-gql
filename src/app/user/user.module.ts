@@ -22,6 +22,7 @@ import { CreateResolver } from './invite/resolvers/create.resolver';
 // Services
 import { UserService } from './user/services/user.service';
 import { ValidateResolver } from './user/resolvers/validate.resolver';
+import { InviteService } from './invite/services/invite.service';
 
 @Module({
   imports: [
@@ -39,13 +40,14 @@ import { ValidateResolver } from './user/resolvers/validate.resolver';
     UpdateResolver,
     SignInResolver,
     RegisterResolver,
+    ValidateResolver,
     // Invites
     GetResolver,
     CheckResolver,
     CreateResolver,
     // services
     UserService,
-    ValidateResolver,
+    InviteService,
   ],
 })
 export class UserModule {}
