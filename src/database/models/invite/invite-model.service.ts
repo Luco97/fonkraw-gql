@@ -72,6 +72,36 @@ export class InviteModelService {
       .getManyAndCount();
   }
 
+  find_all_from_manga(parameters: {
+    user_id: number;
+    manga_id: number;
+  }): Promise<[InviteModel[], number]> {
+    const { manga_id, user_id } = parameters;
+    return this._inviRepo
+      .createQueryBuilder('invite')
+      .leftJoinAndSelect('invite.to_author', 'to_author')
+      .loadRelationCountAndMap(
+        'to_author.mangas_count',
+        'to_author.mangas',
+        'mangos_to_author',
+        (qb) => qb.orderBy('cnt'),
+      )
+      .leftJoin('to_author.user', 'user')
+      .leftJoinAndSelect('invite.from_author', 'from_author')
+      .loadRelationCountAndMap(
+        'from_author.mangas_count',
+        'from_author.mangas',
+        'mangos_from_author',
+        (qb) => qb.orderBy('cnt'),
+      )
+      .leftJoin('from_author.user', 'user')
+      .leftJoin('invite.manga', 'manga')
+      .where('user.id = :user_id', { user_id })
+      .andWhere('manga.id = :manga_id', { manga_id })
+      .orderBy({ 'invite.created_at': 'ASC', 'invite.status': 'DESC' })
+      .getManyAndCount();
+  }
+
   // See if exist to update process
   check_invitation_exist(parameters: {
     // status: boolean;
