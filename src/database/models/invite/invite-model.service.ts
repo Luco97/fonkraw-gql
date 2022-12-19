@@ -28,33 +28,31 @@ export class InviteModelService {
     );
   }
 
-  find_all_to_author(parameters: {
-    user_id: number;
-    author_id: number;
-  }): Promise<[InviteModel[], number]> {
-    const { author_id, user_id } = parameters;
-    return this._inviRepo
-      .createQueryBuilder('invite')
-      .leftJoinAndSelect('invite.to_author', 'to_author')
-      .loadRelationCountAndMap(
-        'to_author.mangas_count',
-        'to_author.mangas',
-        'mangos_to_author',
-        (qb) => qb.orderBy('cnt'),
-      )
-      .leftJoin('to_author.user', 'user')
-      .leftJoinAndSelect('invite.from_author', 'from_author')
-      .loadRelationCountAndMap(
-        'from_author.mangas_count',
-        'from_author.mangas',
-        'mangos_from_author',
-        (qb) => qb.orderBy('cnt'),
-      )
-      .where('to_author.id = :author_id', { author_id })
-      .andWhere('user.id = :user_id', { user_id })
-      .andWhere('invite.status = :status', { status: false })
-      .orderBy('invite.created_at')
-      .getManyAndCount();
+  find_all_to_author(user_id: number): Promise<[InviteModel[], number]> {
+    return (
+      this._inviRepo
+        .createQueryBuilder('invite')
+        .leftJoinAndSelect('invite.to_author', 'to_author')
+        .loadRelationCountAndMap(
+          'to_author.mangas_count',
+          'to_author.mangas',
+          'mangos_to_author',
+          (qb) => qb.orderBy('cnt'),
+        )
+        .leftJoin('to_author.user', 'user')
+        .leftJoinAndSelect('invite.from_author', 'from_author')
+        .loadRelationCountAndMap(
+          'from_author.mangas_count',
+          'from_author.mangas',
+          'mangos_from_author',
+          (qb) => qb.orderBy('cnt'),
+        )
+        // .where('to_author.id = :author_id', { author_id })
+        .where('user.id = :user_id', { user_id })
+        .andWhere('invite.status = :status', { status: false })
+        .orderBy('invite.created_at')
+        .getManyAndCount()
+    );
   }
 
   find_all_from_author(parameters: {
@@ -76,7 +74,7 @@ export class InviteModelService {
 
   // See if exist to update process
   check_invitation_exist(parameters: {
-    status: boolean;
+    // status: boolean;
     user_id: number;
     invite_id: number;
   }): Promise<InviteModel> {
