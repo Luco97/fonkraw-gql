@@ -119,7 +119,7 @@ export class InviteModelService {
   }
 
   // See if exist to send invitation
-  invite_already_exist(parameters: {
+  find_invite_origin(parameters: {
     user_id: number;
     manga_id: number;
     to_author_id: number;
