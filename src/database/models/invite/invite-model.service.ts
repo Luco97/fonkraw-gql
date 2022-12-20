@@ -86,7 +86,6 @@ export class InviteModelService {
         'mangos_to_author',
         (qb) => qb.orderBy('cnt'),
       )
-      .leftJoin('to_author.user', 'user')
       .leftJoinAndSelect('invite.from_author', 'from_author')
       .loadRelationCountAndMap(
         'from_author.mangas_count',
