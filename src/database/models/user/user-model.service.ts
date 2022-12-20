@@ -91,14 +91,14 @@ export class UserModelService {
   }
 
   // if user.author_profile exist then cannot create another author_profile
-  // author_check(parameters: { user_id: number }) {
-  //   const { user_id } = parameters;
-  //   return this._userRepo
-  //     .createQueryBuilder('user')
-  //     .leftJoinAndSelect('user.author_profile', 'author_profile')
-  //     .where('user.id = :user_id', { user_id })
-  //     .getOne();
-  // }
+  author_check(parameters: { author_id: number }) {
+    const { author_id } = parameters;
+    return this._userRepo
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.author_profile', 'author_profile')
+      .where('author_profile.id = :author_id', { author_id })
+      .getOne();
+  }
 
   // Manga features
   manga_creator(parameters: { user_id: number; manga_id: number }) {
