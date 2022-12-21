@@ -91,7 +91,7 @@ export class UserModelService {
   }
 
   // if user.author_profile exist then cannot create another author_profile
-  author_check(parameters: { author_id: number }) {
+  author_check(parameters: { author_id: number }): Promise<UserModel> {
     const { author_id } = parameters;
     return this._userRepo
       .createQueryBuilder('user')
