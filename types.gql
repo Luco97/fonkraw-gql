@@ -137,6 +137,18 @@ type GetAllOutput {
   count: Float!
 }
 
+type CreateInviteOutput {
+  """message for extra info"""
+  message: String
+
+  """status response"""
+  status: Float
+
+  """extra info, anything or json object"""
+  extra: String
+  invite: InviteModel
+}
+
 type read_all_manga {
   """message for extra info"""
   message: String
@@ -337,8 +349,8 @@ input find_all_authors {
 
 input read_all_comments {
   manga_id: Float!
-  take: Float = 5
-  skip: Float = 0
+  take: Float! = 5
+  skip: Float! = 0
 }
 
 type Mutation {
@@ -347,6 +359,8 @@ type Mutation {
   update_password(update_pass: UpdatePasswordInput!): RegisterOutput!
   sign_in(credentials: sign_in!): SignInOutput!
   register_user(user: register_user!): RegisterOutput!
+  invites_from_manga(manga_id: Float!): GetAllOutput!
+  create_invite: CreateInviteOutput!
   create(author: CreateInput): create_author_output!
   update_status(manga_id: UpdateStatusInput!): UpdateOutput!
   update_highlight(manga_id: UpdateStatusInput!): UpdateOutput!
