@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Subject, Observable } from 'rxjs';
 
+import { InviteModel } from '@database/models/invite';
+
 interface invite_data {
   author_id: number;
   comment: string;
+  invite: InviteModel;
 }
 
 @Injectable()
@@ -14,8 +17,7 @@ export class SocketSubjectService {
     return this._socket_subject.asObservable();
   }
 
-  set send_invite(parameters: invite_data) {
+  send_invite(parameters: invite_data): void {
     this._socket_subject.next(parameters);
-    return;
   }
 }
