@@ -23,6 +23,8 @@ import { CreateResolver } from './invite/resolvers/create.resolver';
 import { UserService } from './user/services/user.service';
 import { ValidateResolver } from './user/resolvers/validate.resolver';
 import { InviteService } from './invite/services/invite.service';
+import { InviteGateway } from './invite/gateway/invite.gateway';
+import { SocketSubjectService } from './invite/services/socket-subject.service';
 
 @Module({
   imports: [
@@ -48,6 +50,9 @@ import { InviteService } from './invite/services/invite.service';
     // services
     UserService,
     InviteService,
+    SocketSubjectService,
+    // sockets
+    InviteGateway,
   ],
 })
 export class UserModule {}
