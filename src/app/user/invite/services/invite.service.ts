@@ -2,7 +2,9 @@ import { Injectable, HttpStatus } from '@nestjs/common';
 
 import { UserModelService } from '@database/models/user';
 import { InviteModelService } from '@database/models/invite';
+
 import { GetAllOutput } from '../outputs/get-all.output';
+import { SocketSubjectService } from './socket-subject.service';
 import { CreateInviteOutput } from '../outputs/create-invite.output';
 
 @Injectable()
@@ -10,6 +12,7 @@ export class InviteService {
   constructor(
     private _userService: UserModelService,
     private _inviteModel: InviteModelService,
+    private _socketSubject: SocketSubjectService,
   ) {}
 
   get_all_invites(user_id: number): Promise<GetAllOutput> {
@@ -74,6 +77,11 @@ export class InviteService {
             .then((invite) => {
               // emit with socket notification
               // author_exist.email send email of invite
+              this._socketSubject.send_invite({
+                invite,
+                author_id: invite.to_author.id,
+                comment: invite.comment,
+              });
               resolver({
                 status: HttpStatus.CREATED,
                 message: `author ${invite.to_author.alias} invited succesfully`,
