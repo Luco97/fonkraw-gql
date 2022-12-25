@@ -77,6 +77,7 @@ export class UserModelService {
       .createQueryBuilder('user')
       .select(['user.id', 'user.email', 'user.username', 'user.password'])
       .leftJoinAndSelect('user.role', 'role')
+      .leftJoinAndSelect('user.author_profile', 'author_profile')
       .where('user.email = :email', { email })
       .getOne();
   }
