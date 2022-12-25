@@ -6,14 +6,20 @@ import { Payload } from '../interface/payload.interface';
 export class AuthService {
   constructor(private _jwtService: JwtService) {}
 
-  genJWT(object: { id: number; name: string; type: string }): string {
-    const { id, name, type } = object;
+  genJWT(object: {
+    id: number;
+    author_id: number;
+    name: string;
+    type: string;
+  }): string {
+    const { id, name, type, author_id } = object;
     return this._jwtService.sign({
       sub: name,
       context: {
         username: name,
         extra: id,
         type,
+        author_id,
       },
     });
   }
@@ -66,6 +72,7 @@ export class AuthService {
             username: payload?.context?.username,
             extra: payload?.context?.extra,
             type: payload?.context?.type,
+            author_id: payload?.context?.author_id,
           },
         };
     } catch (error) {
@@ -75,6 +82,7 @@ export class AuthService {
           username: '',
           extra: -1,
           type: '',
+          author_id: 0,
         },
       };
     }
