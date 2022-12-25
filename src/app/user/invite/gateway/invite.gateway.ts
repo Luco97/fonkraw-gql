@@ -1,5 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
+import { AuthService } from '@shared/auth';
 import { tap } from 'rxjs';
 
 import { Socket, Server } from 'socket.io';
@@ -13,9 +14,12 @@ interface client_map {
 export class InviteGateway {
   private readonly _logger = new Logger(InviteGateway.name);
   private _clients: Socket[] = [];
-  _clients_map: client_map = {};
+  private _clients_map: client_map = {};
 
-  constructor(private _socketSubject: SocketSubjectService) {}
+  constructor(
+    private _authService: AuthService,
+    private _socketSubject: SocketSubjectService,
+  ) {}
 
   handleDisconnect(client: Socket) {
     this._logger.log(`client drop`);
@@ -30,19 +34,26 @@ export class InviteGateway {
     this._logger.log('Server init');
     this._socketSubject.invite_subject_obs
       .pipe(
-        tap(({ author_id, comment }) => {
-          this._clients;
+        tap(({ author_id, comment, invite }) => {
+          if (this._clients_map[`${author_id}`])
+            this._clients_map[`${author_id}`].emit('invite_listener', {
+              invite,
+              comment,
+              message: `invited by ${invite.from_author.alias} for manga: ${invite.manga.title}`,
+            });
         }),
       )
       .subscribe();
   }
 
   handleConnection(client: Socket, ...args: any[]) {
-    this._logger.log(`client log`);
-    this._clients.push(client);
-    if (client.handshake.headers?.authorization)
-      this._clients_map[`${client.handshake.headers?.authorization}`] = client;
-    client.emit('aaa', { xd: 'aaaaaaaaaaaaaaaaa' });
+    const token: string = client.handshake.headers?.authorization;
+    const user = this._authService.userObject(token);
+    if (user.context.author_id) {
+      this._clients_map[`${user.context.author_id}`] = client;
+      this._clients.push({ ...client } as Socket);
+      this._logger.log(`client log`);
+    }
   }
 
   @SubscribeMessage('message')
