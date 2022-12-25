@@ -102,7 +102,7 @@ export class InviteModelService {
   }
 
   // See if exist to update process
-  check_invitation_exist(parameters: {
+  check_invite_exist(parameters: {
     // status: boolean;
     user_id: number;
     invite_id: number;
