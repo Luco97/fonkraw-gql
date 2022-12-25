@@ -101,6 +101,7 @@ export class UserService {
                   id: user.id,
                   name: user.username,
                   type: user.role.role_name,
+                  author_id: user.author_profile?.id || 0,
                 }),
               });
             }
