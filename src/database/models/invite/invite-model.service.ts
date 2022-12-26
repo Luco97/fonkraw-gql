@@ -112,6 +112,7 @@ export class InviteModelService {
       .createQueryBuilder('invite')
       .leftJoin('invite.to_author', 'to_author')
       .leftJoin('to_author.user', 'user')
+      .leftJoinAndSelect('invite.manga', 'manga')
       .where('invite.id = :invite_id', { invite_id })
       .andWhere('invite.status = :status', { status: false })
       .andWhere('user.id = :user_id', { user_id })
