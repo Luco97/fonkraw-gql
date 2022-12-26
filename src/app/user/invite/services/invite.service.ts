@@ -3,6 +3,7 @@ import { Injectable, HttpStatus } from '@nestjs/common';
 import { UserModelService } from '@database/models/user';
 import { InviteModelService } from '@database/models/invite';
 
+import { UpdateOutput } from '../outputs/update.output';
 import { GetAllOutput } from '../outputs/get-all.output';
 import { SocketSubjectService } from './socket-subject.service';
 import { CreateInviteOutput } from '../outputs/create-invite.output';
@@ -48,20 +49,23 @@ export class InviteService {
   }
 
   create_invite(parameters: {
-    user_id: number;
+    from_author_user_id: number;
     comment: string;
     manga_id: number;
     to_author_id: number;
   }) {
-    const { user_id, manga_id, to_author_id, comment } = parameters;
+    const { from_author_user_id, manga_id, to_author_id, comment } = parameters;
     return new Promise<CreateInviteOutput>((resolver, reject) => {
       Promise.all([
         this._userService.author_check({ author_id: to_author_id }), // check if this author exist
-        this._userService.manga_creator({ user_id, manga_id }), // check if the user is creator of this manga
+        this._userService.manga_creator({
+          manga_id,
+          user_id: from_author_user_id,
+        }), // check if the user is creator of this manga
         this._inviteModel.find_invite_origin({
-          user_id,
           manga_id,
           to_author_id,
+          user_id: from_author_user_id,
         }), // check if already exist one invite register in DB (in the manga_id)
       ]).then(([author_exist, is_valid, valid_invite]) => {
         if (!(author_exist && is_valid && valid_invite)) {
@@ -91,5 +95,38 @@ export class InviteService {
         }
       });
     });
+  }
+
+  check_invite(parameters: {
+    // manga_id: number;
+    invite_id: number;
+    accept: boolean;
+    to_author_user_id: number;
+  }) {
+    const { accept, invite_id, to_author_user_id } = parameters;
+    return new Promise<UpdateOutput>((resolve, reject) =>
+      this._inviteModel
+        .check_invite_exist({
+          invite_id,
+          user_id: to_author_user_id,
+        })
+        .then((invite) => {
+          if (!invite) {
+            resolve({
+              message: `the invite does't exist`,
+              status: HttpStatus.NOT_FOUND,
+            });
+          } else {
+            this._inviteModel.update({ status: accept, invite_id }).then(() =>
+              resolve({
+                message: accept
+                  ? `invite accepted, join as author in ${invite.manga.title}`
+                  : `invite declined`,
+                status: HttpStatus.OK,
+              }),
+            );
+          }
+        }),
+    );
   }
 }
