@@ -22,6 +22,13 @@ export class InviteGateway {
   ) {}
 
   handleDisconnect(client: Socket) {
+    const token: string = client.handshake.headers?.authorization;
+    const user = this._authService.userObject(token);
+    if (user.context.author_id) {
+      this._clients_map[`${user.context.author_id}`] = undefined;
+      this._clients.push({ ...client } as Socket);
+      this._logger.log(`client log`);
+    }
     this._logger.log(`client drop`);
     this._clients.splice(
       this._clients.findIndex((client_in) => client_in.id == client.id),
@@ -36,7 +43,7 @@ export class InviteGateway {
       .pipe(
         tap(({ author_id, comment, invite }) => {
           if (this._clients_map[`${author_id}`])
-            this._clients_map[`${author_id}`].emit('invite_listener', {
+            this._clients_map[`${author_id}`]?.emit('invite_listener', {
               invite,
               comment,
               message: `invited by ${invite.from_author.alias} for manga: ${invite.manga.title}`,
