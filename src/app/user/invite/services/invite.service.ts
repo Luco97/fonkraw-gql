@@ -102,7 +102,7 @@ export class InviteService {
     invite_id: number;
     accept: boolean;
     to_author_user_id: number;
-  }) {
+  }): Promise<UpdateOutput> {
     const { accept, invite_id, to_author_user_id } = parameters;
     return new Promise<UpdateOutput>((resolve, reject) =>
       this._inviteModel
