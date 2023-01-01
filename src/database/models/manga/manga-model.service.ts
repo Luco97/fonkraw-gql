@@ -158,6 +158,10 @@ export class MangaModelService {
     return this._mangaRepo.update({ id: manga_id }, { highlight: status });
   }
 
+  delete(manga_id: number): Promise<UpdateResult> {
+    return this._mangaRepo.softDelete({ id: manga_id });
+  }
+
   set_genres(
     manga_id: number,
     genres_id: number[],
