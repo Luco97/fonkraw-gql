@@ -1,11 +1,12 @@
-import { UseGuards } from '@nestjs/common';
+import { UseGuards, HttpStatus } from '@nestjs/common';
 import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
 
+import { Request } from 'express';
+
+import { AuthService } from '@shared/auth';
 import { AuthGuard } from '@guard/auth.guard';
 import { UpdateOutput } from '../outputs/update.output';
 import { MangaModelService } from '@database/models/manga';
-import { Request } from 'express';
-import { AuthService } from '@shared/auth';
 
 @Resolver()
 export class DeleteResolver {
@@ -25,7 +26,18 @@ export class DeleteResolver {
     const user_id: number = this._authService.userID(token);
 
     return new Promise<UpdateOutput>((resolve, reject) =>
-      this._mangaModel.find_editable({ user_id, manga_id }),
+      this._mangaModel.find_editable({ user_id, manga_id }).then((manga) => {
+        if (!manga)
+          resolve({
+            message: `manga with id = ${manga_id} doesn't exist`,
+            status: HttpStatus.OK,
+          });
+        else
+          resolve({
+            message: `manga soft removed`,
+            status: HttpStatus.OK,
+          });
+      }),
     );
   }
 }
