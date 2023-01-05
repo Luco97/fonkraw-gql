@@ -1,43 +1,27 @@
-import { UseGuards, HttpStatus } from '@nestjs/common';
+import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
 
 import { Request } from 'express';
 
-import { AuthService } from '@shared/auth';
 import { AuthGuard } from '@guard/auth.guard';
+import { UserDataInterceptor } from '@shared/auth';
 import { UpdateOutput } from '../outputs/update.output';
-import { MangaModelService } from '@database/models/manga';
+import { MangaService } from '../services/manga.service';
 
 @Resolver()
 export class DeleteResolver {
-  constructor(
-    private _mangaModel: MangaModelService,
-    private _authService: AuthService,
-  ) {}
+  constructor(private _mangaService: MangaService) {}
 
   @Mutation(() => UpdateOutput)
   @UseGuards(AuthGuard)
+  @UseInterceptors(UserDataInterceptor)
   delete(
     @Args('manga_id') manga_id: number,
     @Context() context,
   ): Promise<UpdateOutput> {
     const req: Request = context.req;
-    const token: string = req.headers?.authorization;
-    const user_id: number = this._authService.userID(token);
+    const user_id: number = +req.header('user_id');
 
-    return new Promise<UpdateOutput>((resolve, reject) =>
-      this._mangaModel.find_editable({ user_id, manga_id }).then((manga) => {
-        if (!manga)
-          resolve({
-            message: `manga with id = ${manga_id} doesn't exist`,
-            status: HttpStatus.OK,
-          });
-        else
-          resolve({
-            message: `manga soft removed`,
-            status: HttpStatus.OK,
-          });
-      }),
-    );
+    return this._mangaService.delete_manga({ manga_id, user_id });
   }
 }
