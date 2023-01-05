@@ -7,7 +7,6 @@ import { AuthService } from '@shared/auth';
 import { AuthGuard } from '@guard/auth.guard';
 import { MangaModelService } from '@database/models/manga';
 import { GenreModelService } from '@database/models/genre';
-import { AuthorModelService } from '@database/models/author';
 
 import { UpdateOutput } from '../outputs/update.output';
 import { UpdateStatusInput, UpdateGenresInput } from '../inputs/update.input';
@@ -18,7 +17,6 @@ export class UpdateResolver {
     private _authService: AuthService,
     private _mangaModel: MangaModelService,
     private _genreModel: GenreModelService,
-    private _authorModel: AuthorModelService,
   ) {}
 
   @Mutation(() => UpdateOutput)
@@ -72,13 +70,15 @@ export class UpdateResolver {
             status: HttpStatus.OK,
           });
         else
-          this._mangaModel.update_highlight({ manga_id, status }).then((result) =>
-            resolve({
-              message: 'update should be ok',
-              status: HttpStatus.OK,
-              extra: JSON.stringify(result),
-            }),
-          );
+          this._mangaModel
+            .update_highlight({ manga_id, status })
+            .then((result) =>
+              resolve({
+                message: 'update should be ok',
+                status: HttpStatus.OK,
+                extra: JSON.stringify(result),
+              }),
+            );
       });
     });
   }
