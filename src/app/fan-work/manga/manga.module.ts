@@ -12,8 +12,19 @@ import { CreateResolver } from './resolvers/create.resolver';
 import { DeleteResolver } from './resolvers/delete.resolver';
 import { UpdateResolver } from './resolvers/update.resolver';
 
+// Services
+import { MangaService } from './services/manga.service';
+
 @Module({
   imports: [AuthModule, MangaModelModule, AuthorModelModule, GenreModelModule],
-  providers: [ReadResolver, CreateResolver, DeleteResolver, UpdateResolver],
+  providers: [
+    // Resolvers
+    ReadResolver,
+    CreateResolver,
+    DeleteResolver,
+    UpdateResolver,
+    // Services
+    MangaService,
+  ],
 })
 export class MangaModule {}
