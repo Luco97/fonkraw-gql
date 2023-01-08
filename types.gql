@@ -137,6 +137,17 @@ type GetAllOutput {
   count: Float!
 }
 
+type update_invite_output {
+  """message for extra info"""
+  message: String
+
+  """status response"""
+  status: Float
+
+  """extra info, anything or json object"""
+  extra: String
+}
+
 type CreateInviteOutput {
   """message for extra info"""
   message: String
@@ -360,8 +371,10 @@ type Mutation {
   sign_in(credentials: sign_in!): SignInOutput!
   register_user(user: register_user!): RegisterOutput!
   invites_from_manga(manga_id: Float!): GetAllOutput!
-  create_invite: CreateInviteOutput!
+  update_invite(update_invite: update_invite!): update_invite_output!
+  create_invite(parameters: CreateInviteInput!): CreateInviteOutput!
   create(author: CreateInput): create_author_output!
+  delete(manga_id: Float!): UpdateOutput!
   update_status(manga_id: UpdateStatusInput!): UpdateOutput!
   update_highlight(manga_id: UpdateStatusInput!): UpdateOutput!
   update_genres(parameters: UpdateGenresInput!): UpdateOutput!
@@ -400,6 +413,17 @@ input register_user {
 
   """password for the user"""
   password: String!
+}
+
+input update_invite {
+  invite_id: Float!
+  accept: Boolean!
+}
+
+input CreateInviteInput {
+  to_author_id: Float!
+  manga_id: Float!
+  comment: String
 }
 
 input CreateInput {
