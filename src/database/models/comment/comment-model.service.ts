@@ -30,6 +30,16 @@ export class CommentModelService {
       .getManyAndCount();
   }
 
+  find_one_by_user(parameters: { id: number; user_id: number }) {
+    const { id, user_id } = parameters;
+    return this._commentRepo
+      .createQueryBuilder('comment')
+      .leftJoin('comment.user', 'user')
+      .where('comment.id = :comment_id', { comment_id: id })
+      .andWhere('user.id = :user_id', { user_id })
+      .getOne();
+  }
+
   create(parameters: {
     user_id: number;
     comment: string;
