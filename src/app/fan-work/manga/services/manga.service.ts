@@ -4,6 +4,7 @@ import { UpdateOutput } from '../outputs/update.output';
 import { CreateOutput } from '../outputs/create.output';
 import { MangaModelService } from '@database/models/manga';
 import { AuthorModelService } from '@database/models/author';
+import { ReadAllOutput, ReadOneOutput } from '../outputs/read.output';
 
 @Injectable()
 export class MangaService {
@@ -67,5 +68,51 @@ export class MangaService {
           });
       }),
     );
+  }
+
+  find_all(parameters: {
+    order: 'ASC' | 'DESC';
+    orderBy: string;
+    skip: number;
+    take: number;
+    search: string;
+    user_id: number;
+  }): Promise<ReadAllOutput> {
+    const { order, orderBy, search, skip, take, user_id } = parameters;
+
+    return new Promise<ReadAllOutput>((resolve, reject) =>
+      this._mangaModel
+        .find_all({
+          skip,
+          take,
+          order,
+          orderProperty: orderBy,
+          search,
+          user_id,
+        })
+        .then(([mangas, count]) =>
+          resolve({
+            count,
+            mangas,
+            message: `total mangas found: ${count}`,
+            status: HttpStatus.OK,
+          }),
+        ),
+    );
+  }
+
+  find_one(parameters: {
+    manga_id: number;
+    user_id: number;
+  }): Promise<ReadOneOutput> {
+    const { manga_id, user_id } = parameters;
+
+    return new Promise<ReadOneOutput>((resolve, reject) => {
+      this._mangaModel
+        .find_one({ id: manga_id, user_id })
+        .then((manga) =>
+          resolve({ manga, message: ``, status: HttpStatus.OK }),
+        );
+    });
   }
 }
