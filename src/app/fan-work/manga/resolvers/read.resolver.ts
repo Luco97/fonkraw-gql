@@ -2,21 +2,22 @@ import { Args, Context, Query, Resolver } from '@nestjs/graphql';
 
 import { Request } from 'express';
 
-import { HttpStatus, UseGuards } from '@nestjs/common';
+import { HttpStatus, UseGuards, UseInterceptors } from '@nestjs/common';
 
-import { AuthService } from '@shared/auth';
 import { AuthGuard } from '@guard/auth.guard';
 import { find_all_default } from '@utils/find-all.input';
 import { MangaModelService } from '@database/models/manga';
 import { AuthorModelService } from '@database/models/author';
+import { AuthService, UserDataInterceptor } from '@shared/auth';
 
-import { ReadAllOutput, ReadOneOutput } from '../outputs/read.output';
 import {
   ReadAllInput,
-  ReadEditablesInput,
-  ReadOneInput,
   ReadRelatedInput,
+  ReadEditablesInput,
 } from '../inputs/read.input';
+import { ReadAllOutput, ReadOneOutput } from '../outputs/read.output';
+
+import { MangaService } from '../services/manga.service';
 
 @Resolver()
 export class ReadResolver {
@@ -24,9 +25,11 @@ export class ReadResolver {
     private _authService: AuthService,
     private _mangaModel: MangaModelService,
     private _authorModel: AuthorModelService,
+    private _mangaService: MangaService,
   ) {}
 
   @Query(() => ReadAllOutput, { name: 'find_all_manga' })
+  @UseInterceptors(UserDataInterceptor)
   find_all(
     @Args('options', {
       nullable: true,
@@ -36,33 +39,23 @@ export class ReadResolver {
     @Context() context,
   ): Promise<ReadAllOutput> {
     const req: Request = context.req;
-    const token: string = req.headers?.authorization;
-    const user_id: number = this._authService.userID(token);
+    // const token: string = req.headers?.authorization;
+    // const user_id: number = this._authService.userID(token);
+    const user_id: number = +req.header('user_id');
 
     const { order, orderBy, skip, take, search } = readInput || {
       search: '',
       ...find_all_default,
     };
 
-    return new Promise<ReadAllOutput>((resolve, reject) =>
-      this._mangaModel
-        .find_all({
-          skip,
-          take,
-          order,
-          orderProperty: orderBy,
-          search,
-          user_id,
-        })
-        .then(([mangas, count]) =>
-          resolve({
-            count,
-            mangas,
-            message: `total mangas found: ${count}`,
-            status: HttpStatus.OK,
-          }),
-        ),
-    );
+    return this._mangaService.find_all({
+      skip,
+      take,
+      order,
+      search,
+      orderBy,
+      user_id,
+    });
   }
 
   @Query(() => [ReadAllOutput])
@@ -110,21 +103,15 @@ export class ReadResolver {
   }
 
   @Query(() => ReadOneOutput)
+  @UseInterceptors(UserDataInterceptor)
   find_one(
     @Args('manga_id') manga_id: number,
     @Context() context,
   ): Promise<ReadOneOutput> {
     const req: Request = context.req;
-    const token: string = req.headers?.authorization;
-    const user_id: number = this._authService.userID(token);
+    const user_id: number = +req.header('user_id');
 
-    return new Promise<ReadOneOutput>((resolve, reject) => {
-      this._mangaModel
-        .find_one({ id: manga_id, user_id })
-        .then((manga) =>
-          resolve({ manga, message: ``, status: HttpStatus.OK }),
-        );
-    });
+    return this._mangaService.find_one({ manga_id, user_id });
   }
 
   // Obtener mangas relacionados
