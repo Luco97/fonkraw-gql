@@ -2,6 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { ReadAllOutput } from '../outputs/read.output';
 import { CreateOutput } from '../outputs/create.output';
+import { DeleteOutput } from '../outputs/delete.output';
 import { MangaModelService } from '@database/models/manga';
 import { CommentModel, CommentModelService } from '@database/models/comment';
 
@@ -58,5 +59,28 @@ export class CommentService {
             );
       }),
     );
+  }
+
+  delete(parameters: { comment_id: number; user_id: number }) {
+    const { comment_id, user_id } = parameters;
+
+    return new Promise<DeleteOutput>((resolve, reject) => {
+      this._commentModel
+        .find_one_by_user({ id: comment_id, user_id })
+        .then((comment) => {
+          if (!comment)
+            resolve({
+              status: HttpStatus.NOT_FOUND,
+              message: `comment with id = ${comment_id} not found`,
+            });
+          else
+            this._commentModel.delete(comment_id).then(() =>
+              resolve({
+                status: HttpStatus.OK,
+                message: `comment with id: ${comment_id} deleted`,
+              }),
+            );
+        });
+    });
   }
 }
