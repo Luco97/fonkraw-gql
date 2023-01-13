@@ -12,6 +12,15 @@ export class ReadAllInput extends findAll {
 export class ReadEditablesInput extends findAll {}
 
 @InputType()
+export class ReadFavoritesInput extends findAll {
+  @Field(() => String, { nullable: true, defaultValue: '' })
+  search?: string;
+
+  @Field(() => String, { nullable: true, defaultValue: '' })
+  username?: string;
+}
+
+@InputType()
 export class ReadOneInput {
   @Field(() => Number)
   manga_id: number;
