@@ -153,4 +153,31 @@ export class MangaService {
       }),
     );
   }
+
+  find_favorites(parameters: {
+    skip: number;
+    take: number;
+    orderBy: string;
+    order: 'ASC' | 'DESC';
+    search: string;
+    user_id: number;
+    username: string;
+  }) {
+    const { order, orderBy, search, skip, take, user_id, username } =
+      parameters;
+
+    return new Promise<ReadAllOutput>((resolve, reject) => {
+      this._mangaModel
+        .find_favorites({
+          skip,
+          take,
+          order,
+          orderProperty: orderBy,
+          search,
+          user_id, // wich of those are user_id favorites
+          username, // actual favorite mangas
+        })
+        .then(([mangas, count]) => resolve({ count, mangas }));
+    });
+  }
 }
