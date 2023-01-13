@@ -2,6 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { UpdateOutput } from '../outputs/update.output';
 import { CreateOutput } from '../outputs/create.output';
+import { UserModelService } from '@database/models/user';
 import { MangaModelService } from '@database/models/manga';
 import { AuthorModelService } from '@database/models/author';
 import { ReadAllOutput, ReadOneOutput } from '../outputs/read.output';
@@ -9,6 +10,7 @@ import { ReadAllOutput, ReadOneOutput } from '../outputs/read.output';
 @Injectable()
 export class MangaService {
   constructor(
+    private _userModel: UserModelService,
     private _mangaModel: MangaModelService,
     private _authorModel: AuthorModelService,
   ) {}
@@ -154,6 +156,7 @@ export class MangaService {
     );
   }
 
+  // user with username need to exist
   find_favorites(parameters: {
     skip: number;
     take: number;
@@ -167,17 +170,44 @@ export class MangaService {
       parameters;
 
     return new Promise<ReadAllOutput>((resolve, reject) => {
-      this._mangaModel
-        .find_favorites({
-          skip,
-          take,
-          order,
-          orderProperty: orderBy,
-          search,
-          user_id, // wich of those are user_id favorites
-          username, // actual favorite mangas
-        })
-        .then(([mangas, count]) => resolve({ count, mangas }));
+      if (!username)
+        this._mangaModel
+          .find_favorites({
+            skip,
+            take,
+            order,
+            orderProperty: orderBy,
+            search,
+            user_id, // wich of those are user_id favorites
+            username, // actual favorite mangas
+          })
+          .then(([mangas, count]) =>
+            resolve({ count, mangas, status: HttpStatus.OK, message: `` }),
+          );
+      else
+        this._userModel.find_one({ username, email: '' }).then((count) => {
+          if (!count)
+            resolve({
+              count: 0,
+              mangas: [],
+              status: HttpStatus.NOT_FOUND,
+              message: ``,
+            });
+          else
+            this._mangaModel
+              .find_favorites({
+                skip,
+                take,
+                order,
+                orderProperty: orderBy,
+                search,
+                user_id, // wich of those are user_id favorites
+                username, // actual favorite mangas
+              })
+              .then(([mangas, count]) =>
+                resolve({ count, mangas, status: HttpStatus.OK, message: `` }),
+              );
+        });
     });
   }
 }
