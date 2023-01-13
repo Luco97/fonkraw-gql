@@ -25,57 +25,61 @@ export class MangaModelService {
         ? orderProperty
         : 'createdAt'
     }`;
-    return this._mangaRepo
-      .createQueryBuilder('manga')
-      .leftJoinAndSelect('manga.genres', 'genres')
-      .loadRelationCountAndMap(
-        'genres.mangas_count',
-        'genres.mangas',
-        'tags',
-        (qb) => qb.orderBy('cnt'),
-      )
-      .leftJoinAndSelect('manga.authors', 'authors')
-      .loadRelationCountAndMap(
-        'authors.mangas_count',
-        'authors.mangas',
-        'artists',
-        (qb) => qb.orderBy('cnt'),
-      )
-      .leftJoinAndSelect('manga.language', 'language')
-      .leftJoinAndSelect('manga.users', 'users', 'users.id = :user_id', {
-        user_id: user_id || 0,
-      })
-      .loadRelationCountAndMap(
-        'manga.favorites_user',
-        'manga.users',
-        'favorites',
-        (qb) => qb.orderBy('cnt'),
-      )
-      .loadRelationCountAndMap(
-        'manga.commentaries',
-        'manga.comments',
-        'commentarious',
-        (qb) => qb.orderBy('cnt'),
-      )
-      .where(
-        new Brackets((qb) =>
-          qb
-            .where('LOWER(manga.title) = LOWER(:search)', {
-              search: `%${search}%`,
-            })
-            .orWhere('LOWER(genres.name) = LOWER(:search)', {
-              search: `%${search}%`,
-            })
-            .orWhere('LOWER(authors.alias) = LOWER(:search)', {
-              search: `%${search}%`,
-            }),
-        ),
-      )
-      .andWhere('manga.active = :status', { status: true })
-      .orderBy(orderBy, ['ASC', 'DESC'].includes(order) ? order : 'ASC')
-      .take(take || 10)
-      .skip(skip || 0)
-      .getManyAndCount();
+    return (
+      this._mangaRepo
+        .createQueryBuilder('manga')
+        .leftJoinAndSelect('manga.genres', 'genres')
+        .loadRelationCountAndMap(
+          'genres.mangas_count',
+          'genres.mangas',
+          'tags',
+          (qb) => qb.orderBy('cnt'),
+        )
+        .leftJoinAndSelect('manga.authors', 'authors')
+        .loadRelationCountAndMap(
+          'authors.mangas_count',
+          'authors.mangas',
+          'artists',
+          (qb) => qb.orderBy('cnt'),
+        )
+        .leftJoinAndSelect('manga.language', 'language')
+        // Thanks this leftJoin users property has lenght and
+        // listener set_favorite() is called in MangaModel entity
+        .leftJoinAndSelect('manga.users', 'users', 'users.id = :user_id', {
+          user_id: user_id || 0,
+        })
+        .loadRelationCountAndMap(
+          'manga.favorites_user',
+          'manga.users',
+          'favorites',
+          (qb) => qb.orderBy('cnt'),
+        )
+        .loadRelationCountAndMap(
+          'manga.commentaries',
+          'manga.comments',
+          'commentarious',
+          (qb) => qb.orderBy('cnt'),
+        )
+        .where(
+          new Brackets((qb) =>
+            qb
+              .where('LOWER(manga.title) = LOWER(:search)', {
+                search: `%${search}%`,
+              })
+              .orWhere('LOWER(genres.name) = LOWER(:search)', {
+                search: `%${search}%`,
+              })
+              .orWhere('LOWER(authors.alias) = LOWER(:search)', {
+                search: `%${search}%`,
+              }),
+          ),
+        )
+        .andWhere('manga.active = :status', { status: true })
+        .orderBy(orderBy, ['ASC', 'DESC'].includes(order) ? order : 'ASC')
+        .take(take || 10)
+        .skip(skip || 0)
+        .getManyAndCount()
+    );
   }
 
   find_one(parameters: { id: number; user_id: number }): Promise<MangaModel> {
@@ -217,64 +221,72 @@ export class MangaModelService {
     take: number;
     search: string;
     user_id: number;
+    username: string;
     orderProperty: string;
     order: 'ASC' | 'DESC';
   }): Promise<[MangaModel[], number]> {
-    const { order, orderProperty, skip, take, search, user_id } = parameters;
+    const { order, orderProperty, skip, take, search, username, user_id } =
+      parameters;
     const orderBy: string = `items.${
       ['title', 'pages', 'created_at', 'favorites_user'].includes(orderProperty)
         ? orderProperty
         : 'createdAt'
     }`;
-    return this._mangaRepo
-      .createQueryBuilder('manga')
-      .leftJoin('manga.users', 'users')
-      .leftJoinAndSelect('manga.genres', 'genres')
-      .loadRelationCountAndMap(
-        'genres.mangas_count',
-        'genres.mangas',
-        'tags',
-        (qb) => qb.orderBy('cnt'),
-      )
-      .leftJoinAndSelect('manga.authors', 'authors')
-      .loadRelationCountAndMap(
-        'authors.mangas_count',
-        'authors.mangas',
-        'artists',
-        (qb) => qb.orderBy('cnt'),
-      )
-      .leftJoinAndSelect('manga.language', 'language')
-      .loadRelationCountAndMap(
-        'manga.favorites_user',
-        'manga.users',
-        'favorites',
-        (qb) => qb.orderBy('cnt'),
-      )
-      .loadRelationCountAndMap(
-        'manga.commentaries',
-        'manga.comments',
-        'commentarious',
-        (qb) => qb.orderBy('cnt'),
-      )
-      .where(
-        new Brackets((qb) =>
-          qb
-            .where('LOWER(manga.title) = LOWER(:search)', {
-              search: `%${search}%`,
-            })
-            .orWhere('LOWER(genres.name) = LOWER(:search)', {
-              search: `%${search}%`,
-            })
-            .orWhere('LOWER(authors.alias) = LOWER(:search)', {
-              search: `%${search}%`,
-            }),
-        ),
-      )
-      .andWhere('users.id = :user_id', { user_id })
-      .orderBy(orderBy, ['ASC', 'DESC'].includes(order) ? order : 'ASC')
-      .take(take || 10)
-      .skip(skip || 0)
-      .getManyAndCount();
+    return (
+      this._mangaRepo
+        .createQueryBuilder('manga')
+        .leftJoinAndSelect('manga.genres', 'genres')
+        .loadRelationCountAndMap(
+          'genres.mangas_count',
+          'genres.mangas',
+          'tags',
+          (qb) => qb.orderBy('cnt'),
+        )
+        .leftJoinAndSelect('manga.authors', 'authors')
+        .loadRelationCountAndMap(
+          'authors.mangas_count',
+          'authors.mangas',
+          'artists',
+          (qb) => qb.orderBy('cnt'),
+        )
+        .leftJoinAndSelect('manga.language', 'language')
+        .loadRelationCountAndMap(
+          'manga.favorites_user',
+          'manga.users',
+          'favorites',
+          (qb) => qb.orderBy('cnt'),
+        )
+        .loadRelationCountAndMap(
+          'manga.commentaries',
+          'manga.comments',
+          'commentarious',
+          (qb) => qb.orderBy('cnt'),
+        )
+        // Thanks this leftJoin users property has lenght and
+        // listener set_favorite() is called in MangaModel entity
+        .leftJoinAndSelect('manga.users', 'users', 'users.id = :user_id', {
+          user_id: user_id || 0,
+        })
+        .where(
+          new Brackets((qb) =>
+            qb
+              .where('LOWER(manga.title) = LOWER(:search)', {
+                search: `%${search}%`,
+              })
+              .orWhere('LOWER(genres.name) = LOWER(:search)', {
+                search: `%${search}%`,
+              })
+              .orWhere('LOWER(authors.alias) = LOWER(:search)', {
+                search: `%${search}%`,
+              }),
+          ),
+        )
+        .andWhere('LOWER(users.username) = LOWER(:username)', { username })
+        .orderBy(orderBy, ['ASC', 'DESC'].includes(order) ? order : 'ASC')
+        .take(take || 10)
+        .skip(skip || 0)
+        .getManyAndCount()
+    );
   }
 
   find_author_manga(parameters: {
