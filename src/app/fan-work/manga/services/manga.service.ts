@@ -115,4 +115,42 @@ export class MangaService {
         );
     });
   }
+
+  find_editables(parameters: {
+    skip: number;
+    take: number;
+    order: 'ASC' | 'DESC';
+    orderBy: string;
+    user_id: number;
+  }): Promise<ReadAllOutput> {
+    const { order, orderBy, skip, take, user_id } = parameters;
+
+    return new Promise<ReadAllOutput>((resolve, reject) =>
+      Promise.all([
+        this._mangaModel.find_editables({
+          skip,
+          take,
+          order,
+          orderProperty: orderBy,
+          user_id,
+        }),
+        this._authorModel.author_check({ user_id }),
+      ]).then(([[mangas, count], author]) => {
+        if (!author)
+          resolve({
+            mangas,
+            count,
+            message: `you havent an author associate`,
+            status: HttpStatus.OK,
+          });
+        else
+          resolve({
+            mangas,
+            count,
+            message: `total mangas created by ${author.alias}: ${count}`,
+            status: HttpStatus.OK,
+          });
+      }),
+    );
+  }
 }
