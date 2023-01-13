@@ -380,7 +380,7 @@ type Mutation {
   update_genres(parameters: UpdateGenresInput!): UpdateOutput!
   update(author: UpdateInput): response!
   create_comment(parameters: create_comment!): CreateOutput!
-  delete_comment(parameters: DeleteInput!): DeleteOutput!
+  delete_comment(parameters: Float!): DeleteOutput!
 }
 
 """update user input"""
@@ -449,9 +449,4 @@ input UpdateInput {
 input create_comment {
   comment: String!
   manga_id: Float!
-}
-
-input DeleteInput {
-  user_comment_id: Float!
-  comment_id: Float!
 }
