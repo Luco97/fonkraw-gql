@@ -14,6 +14,7 @@ import {
   ReadAllInput,
   ReadRelatedInput,
   ReadEditablesInput,
+  ReadFavoritesInput,
 } from '../inputs/read.input';
 import { ReadAllOutput, ReadOneOutput } from '../outputs/read.output';
 
@@ -60,6 +61,7 @@ export class ReadResolver {
 
   @Query(() => [ReadAllOutput])
   @UseGuards(AuthGuard)
+  @UseInterceptors(UserDataInterceptor)
   find_editables(
     @Args('options', {
       nullable: true,
@@ -69,37 +71,16 @@ export class ReadResolver {
     @Context() context,
   ) {
     const req: Request = context.req;
-    const token: string = req.headers?.authorization;
-    const user_id: number = this._authService.userID(token);
+    const user_id: number = +req.header('user_id');
 
     const { order, orderBy, skip, take } = readInput || find_all_default;
-    return new Promise<ReadAllOutput>((resolve, reject) =>
-      Promise.all([
-        this._mangaModel.find_editables({
-          skip,
-          take,
-          order,
-          orderProperty: orderBy,
-          user_id,
-        }),
-        this._authorModel.author_check({ user_id }),
-      ]).then(([[mangas, count], author]) => {
-        if (!author)
-          resolve({
-            mangas,
-            count,
-            message: `you havent an author associate`,
-            status: HttpStatus.OK,
-          });
-        else
-          resolve({
-            mangas,
-            count,
-            message: `total mangas created by ${author.alias}: ${count}`,
-            status: HttpStatus.OK,
-          });
-      }),
-    );
+    return this._mangaService.find_editables({
+      skip,
+      take,
+      order,
+      orderBy,
+      user_id,
+    });
   }
 
   @Query(() => ReadOneOutput)
@@ -112,6 +93,36 @@ export class ReadResolver {
     const user_id: number = +req.header('user_id');
 
     return this._mangaService.find_one({ manga_id, user_id });
+  }
+
+  @Query(() => [ReadAllOutput])
+  @UseGuards(AuthGuard)
+  @UseInterceptors(UserDataInterceptor)
+  find_favorites(
+    @Args('options', {
+      nullable: true,
+      defaultValue: find_all_default,
+    })
+    readInput: ReadFavoritesInput,
+    @Context() context,
+  ) {
+    const req: Request = context.req;
+    const user_id: number = +req.header('user_id');
+
+    const { order, orderBy, skip, take, search, username } = readInput || {
+      ...find_all_default,
+      search: '',
+      username: '',
+    };
+    return this._mangaService.find_favorites({
+      skip,
+      take,
+      order,
+      orderBy,
+      search,
+      user_id,
+      username,
+    });
   }
 
   // Obtener mangas relacionados
