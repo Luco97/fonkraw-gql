@@ -300,6 +300,7 @@ type Query {
   find_all_manga(options: read_all_mangas = {take: 10, skip: 0, orderBy: "created_at", order: "ASC", search: ""}): read_all_manga!
   find_editables(options: ReadEditablesInput = {take: 10, skip: 0, orderBy: "created_at", order: "ASC"}): [read_all_manga!]!
   find_one(manga_id: Float!): read_one_manga!
+  find_favorites(options: ReadFavoritesInput = {take: 10, skip: 0, orderBy: "created_at", order: "ASC"}): [read_all_manga!]!
   related_mangas(parameters: ReadRelatedInput!): read_all_manga!
   find_all_genres: find_all_genres!
   find_all_authors(options: find_all_authors = {take: 10, skip: 0, orderBy: "created_at", order: "ASC", alias: ""}): read_all_authors!
@@ -335,6 +336,22 @@ input ReadEditablesInput {
 
   """if is ASCendent or DESCendent"""
   order: String = "ASC"
+}
+
+input ReadFavoritesInput {
+  """quantity of items"""
+  take: Float = 10
+
+  """number of items to skip"""
+  skip: Float = 0
+
+  """field selected for order"""
+  orderBy: String = "create_at"
+
+  """if is ASCendent or DESCendent"""
+  order: String = "ASC"
+  search: String = ""
+  username: String = ""
 }
 
 input ReadRelatedInput {
