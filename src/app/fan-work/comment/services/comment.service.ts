@@ -3,12 +3,14 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { ReadAllOutput } from '../outputs/read.output';
 import { CreateOutput } from '../outputs/create.output';
 import { DeleteOutput } from '../outputs/delete.output';
+import { UserModelService } from '@database/models/user';
 import { MangaModelService } from '@database/models/manga';
 import { CommentModel, CommentModelService } from '@database/models/comment';
 
 @Injectable()
 export class CommentService {
   constructor(
+    private _userModel: UserModelService,
     private _mangaModel: MangaModelService,
     private _commentModel: CommentModelService,
   ) {}
@@ -48,15 +50,18 @@ export class CommentService {
             message: `that manga does't exist :(`,
           });
         else
-          this._commentModel
-            .create({ comment, manga_id, user_id })
-            .then((new_comment) =>
-              resolve({
-                status: HttpStatus.CREATED,
-                message: `comment created`,
-                comment: new_comment,
-              }),
-            );
+          Promise.all([
+            this._commentModel.create({ comment, manga_id, user_id }),
+            this._userModel.find_one_by_id(user_id),
+          ]).then(([new_comment, user_info]) => {
+            console.log(new_comment);
+            new_comment.user = user_info;
+            resolve({
+              status: HttpStatus.CREATED,
+              message: `comment created`,
+              comment: new_comment,
+            });
+          });
       }),
     );
   }
