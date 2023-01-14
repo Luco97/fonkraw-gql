@@ -40,13 +40,14 @@ export class MangaService {
                 cover_url,
                 author_id: author.id,
               })
-              .then((new_manga) =>
+              .then((new_manga) => {
+                new_manga.authors = [author];
                 resolve({
                   manga: new_manga,
                   message: `manga created`,
                   status: HttpStatus.CREATED,
-                }),
-              );
+                });
+              });
         });
     });
   }
