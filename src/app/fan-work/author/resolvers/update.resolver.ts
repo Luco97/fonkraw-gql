@@ -21,11 +21,9 @@ export class UpdateResolver {
     @Context() context,
   ): Promise<response> {
     const req: Request = context.req;
-    // const token: string = req.headers?.authorization;
+    const user_id: number = +req.header('user_id');
 
     const { description } = updateInput;
-    // const user_id: number = this._authService.userID(token);
-    const user_id: number = +req.header('user_id');
 
     return this._authorService.update_info({ description, user_id });
   }
