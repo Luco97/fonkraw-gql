@@ -211,4 +211,30 @@ export class MangaService {
         });
     });
   }
+
+  related_mangas(parameters: {
+    user_id: number;
+    author_id: number;
+    author_alias: string;
+  }): Promise<ReadAllOutput> {
+    const { author_alias, author_id, user_id } = parameters;
+
+    return new Promise<ReadAllOutput>((resolve, reject) => {
+      this._mangaModel
+        .find_relateds({
+          take: 2,
+          author_alias,
+          author_id,
+          user_id,
+        })
+        .then(([mangas, count]) =>
+          resolve({
+            mangas,
+            count,
+            message: `best mangas of ${author_alias} found`,
+            status: HttpStatus.OK,
+          }),
+        );
+    });
+  }
 }
