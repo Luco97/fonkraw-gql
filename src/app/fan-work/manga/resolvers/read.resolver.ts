@@ -130,32 +130,20 @@ export class ReadResolver {
   // ultimo(s) creado
   // mejor del genero o nose ahi se me ocurrira
   @Query(() => ReadAllOutput)
+  @UseInterceptors(UserDataInterceptor)
   related_mangas(
     @Args('parameters', { nullable: false }) readInput: ReadRelatedInput,
     @Context() context,
   ) {
     const req: Request = context.req;
-    const token: string = req.headers?.authorization;
-    const user_id: number = this._authService.userID(token);
+    const user_id: number = +req.header('user_id');
 
     const { author_alias, author_id } = readInput;
 
-    return new Promise<ReadAllOutput>((resolve, reject) => {
-      this._mangaModel
-        .find_relateds({
-          take: 2,
-          author_alias,
-          author_id,
-          user_id,
-        })
-        .then(([mangas, count]) =>
-          resolve({
-            mangas,
-            count,
-            message: `best mangas of ${author_alias} found`,
-            status: HttpStatus.OK,
-          }),
-        );
+    return this._mangaService.related_mangas({
+      user_id,
+      author_id,
+      author_alias,
     });
   }
 }
