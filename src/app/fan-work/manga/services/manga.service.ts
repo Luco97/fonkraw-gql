@@ -166,7 +166,7 @@ export class MangaService {
     search: string;
     user_id: number;
     username: string;
-  }) {
+  }): Promise<ReadAllOutput> {
     const { order, orderBy, search, skip, take, user_id, username } =
       parameters;
 
