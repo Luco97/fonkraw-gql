@@ -2,13 +2,11 @@ import { Args, Context, Query, Resolver } from '@nestjs/graphql';
 
 import { Request } from 'express';
 
-import { HttpStatus, UseGuards, UseInterceptors } from '@nestjs/common';
+import { UseGuards, UseInterceptors } from '@nestjs/common';
 
 import { AuthGuard } from '@guard/auth.guard';
 import { find_all_default } from '@utils/find-all.input';
-import { MangaModelService } from '@database/models/manga';
-import { AuthorModelService } from '@database/models/author';
-import { AuthService, UserDataInterceptor } from '@shared/auth';
+import { UserDataInterceptor } from '@shared/auth';
 
 import {
   ReadAllInput,
@@ -22,12 +20,7 @@ import { MangaService } from '../services/manga.service';
 
 @Resolver()
 export class ReadResolver {
-  constructor(
-    private _authService: AuthService,
-    private _mangaModel: MangaModelService,
-    private _authorModel: AuthorModelService,
-    private _mangaService: MangaService,
-  ) {}
+  constructor(private _mangaService: MangaService) {}
 
   @Query(() => ReadAllOutput, { name: 'find_all_manga' })
   @UseInterceptors(UserDataInterceptor)
