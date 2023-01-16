@@ -263,4 +263,32 @@ export class MangaService {
       });
     });
   }
+
+  update_highlight(parameters: {
+    manga_id: number;
+    status: boolean;
+    user_id: number;
+  }): Promise<UpdateOutput> {
+    const { manga_id, status, user_id } = parameters;
+
+    return new Promise<UpdateOutput>((resolve, reject) => {
+      this._mangaModel.find_editable({ manga_id, user_id }).then((manga) => {
+        if (!manga)
+          resolve({
+            message: `can't edit manga with id = ${manga_id}, you aren't the creator`,
+            status: HttpStatus.OK,
+          });
+        else
+          this._mangaModel
+            .update_highlight({ manga_id, status })
+            .then((result) =>
+              resolve({
+                message: 'update should be ok',
+                status: HttpStatus.OK,
+                extra: JSON.stringify(result),
+              }),
+            );
+      });
+    });
+  }
 }
