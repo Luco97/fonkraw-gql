@@ -1,18 +1,17 @@
-import { HttpStatus } from '@nestjs/common';
-import { Args, Context, Query, Resolver } from '@nestjs/graphql';
+import { Args, Query, Resolver } from '@nestjs/graphql';
 
 import { find_all_default } from '@utils/find-all.input';
-import { AuthorModelService } from '@database/models/author';
 
 import { ReadInput } from '../inputs/read.input';
+import { AuthorService } from '../services/author.service';
 import { ReadAllOutput, ReadOneOutput } from '../outputs/read.output';
 
 @Resolver()
 export class ReadResolver {
-  constructor(private _authorModel: AuthorModelService) {}
+  constructor(private _authorModel: AuthorService) {}
 
   @Query(() => ReadAllOutput, { name: 'find_all_authors' })
-  findAll(
+  find_all(
     @Args('options', {
       // variable not defined
       defaultValue: {
@@ -27,38 +26,14 @@ export class ReadResolver {
       alias: '',
       ...find_all_default,
     }; // variable or Args 'options': null;
-    return new Promise<ReadAllOutput>((resolve, reject) => {
-      this._authorModel
-        .find_all({
-          alias,
-          take,
-          skip,
-          order,
-          orderProperty: orderBy,
-        })
-        .then(([authors, count]) =>
-          resolve({
-            authors,
-            count,
-            status: HttpStatus.OK,
-            message: `amount of authors found: ${count}`,
-          }),
-        );
-    });
+
+    return this._authorModel.find_all({ alias, order, orderBy, skip, take });
   }
 
   @Query(() => ReadAllOutput, { name: 'find_one_author' })
-  findOne(
+  find_one(
     @Args('author_id', { nullable: false }) author_id: number,
   ): Promise<ReadOneOutput> {
-    return new Promise<ReadOneOutput>((resolve, reject) => {
-      this._authorModel.find_one(author_id).then((author) =>
-        resolve({
-          author,
-          status: HttpStatus.OK,
-          message: `author with id: ${author_id}`,
-        }),
-      );
-    });
+    return this._authorModel.find_one(author_id);
   }
 }
