@@ -3,10 +3,52 @@ import { Injectable, HttpStatus } from '@nestjs/common';
 import { response } from '@utils/response.output';
 import { AuthorModelService } from '@database/models/author';
 import { CreateOutput } from '../outputs/create.output';
+import { ReadAllOutput, ReadOneOutput } from '../outputs/read.output';
 
 @Injectable()
 export class AuthorService {
   constructor(private _authorModel: AuthorModelService) {}
+
+  find_all(parameters: {
+    alias: string;
+    take: number;
+    skip: number;
+    order: 'ASC' | 'DESC';
+    orderBy: string;
+  }): Promise<ReadAllOutput> {
+    const { alias, order, orderBy, skip, take } = parameters;
+
+    return new Promise<ReadAllOutput>((resolve, reject) => {
+      this._authorModel
+        .find_all({
+          alias,
+          take,
+          skip,
+          order,
+          orderProperty: orderBy,
+        })
+        .then(([authors, count]) =>
+          resolve({
+            authors,
+            count,
+            status: HttpStatus.OK,
+            message: `amount of authors found: ${count}`,
+          }),
+        );
+    });
+  }
+
+  find_one(author_id: number): Promise<ReadOneOutput> {
+    return new Promise<ReadOneOutput>((resolve, reject) => {
+      this._authorModel.find_one(author_id).then((author) =>
+        resolve({
+          author,
+          status: HttpStatus.OK,
+          message: `author with id: ${author_id}`,
+        }),
+      );
+    });
+  }
 
   create(parameters: {
     alias: string;
