@@ -3,6 +3,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { UpdateOutput } from '../outputs/update.output';
 import { CreateOutput } from '../outputs/create.output';
 import { UserModelService } from '@database/models/user';
+import { GenreModelService } from '@database/models/genre';
 import { MangaModelService } from '@database/models/manga';
 import { AuthorModelService } from '@database/models/author';
 import { ReadAllOutput, ReadOneOutput } from '../outputs/read.output';
@@ -11,6 +12,7 @@ import { ReadAllOutput, ReadOneOutput } from '../outputs/read.output';
 export class MangaService {
   constructor(
     private _userModel: UserModelService,
+    private _genreModel: GenreModelService,
     private _mangaModel: MangaModelService,
     private _authorModel: AuthorModelService,
   ) {}
@@ -288,6 +290,42 @@ export class MangaService {
                 extra: JSON.stringify(result),
               }),
             );
+      });
+    });
+  }
+
+  update_genres(parameters: {
+    add_genres: number[];
+    manga_id: number;
+    user_id: number;
+  }) {
+    const { add_genres, manga_id, user_id } = parameters;
+
+    return new Promise<UpdateOutput>((resolve, reject) => {
+      this._mangaModel.find_editable({ manga_id, user_id }).then((manga) => {
+        if (!manga) resolve({ message: ``, status: HttpStatus.OK });
+        else {
+          // get genres that exists with those ids
+          this._genreModel
+            .find_many_by_id([...new Set(add_genres)])
+            .then((new_genres) => {
+              let new_genres_ids: number[] = new_genres.map<number>(
+                (element) => element.id,
+              );
+              // Actual genres with the manga
+              let drop_genres_ids: number[] = manga.genres.map<number>(
+                (element) => element.id,
+              );
+              this._mangaModel
+                .set_genres(manga.id, new_genres_ids, drop_genres_ids)
+                .then(() =>
+                  resolve({
+                    message: `new genres setted in manga with id = ${manga.id}`,
+                    status: HttpStatus.OK,
+                  }),
+                );
+            });
+        }
       });
     });
   }
