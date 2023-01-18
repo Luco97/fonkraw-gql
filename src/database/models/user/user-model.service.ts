@@ -96,13 +96,17 @@ export class UserModelService {
     const { author_id } = parameters;
     return this._userRepo
       .createQueryBuilder('user')
+      .select(['user.email'])
       .leftJoinAndSelect('user.author_profile', 'author_profile')
       .where('author_profile.id = :author_id', { author_id })
       .getOne();
   }
 
   // Manga features
-  manga_creator(parameters: { user_id: number; manga_id: number }) {
+  manga_creator(parameters: {
+    user_id: number;
+    manga_id: number;
+  }): Promise<number> {
     const { user_id, manga_id } = parameters;
     return this._userRepo
       .createQueryBuilder('user')
@@ -115,7 +119,10 @@ export class UserModelService {
 
   // Invite feature
   // Valid user to send invitation, if return value > 0
-  invite_creator(parameters: { user_id: number; manga_id: number }) {
+  invite_creator(parameters: {
+    user_id: number;
+    manga_id: number;
+  }): Promise<number> {
     const { manga_id, user_id } = parameters;
     return this._userRepo
       .createQueryBuilder('user')
