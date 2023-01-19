@@ -62,6 +62,7 @@ export class UserService {
                         .replace(/{{ domain }}/g, process.env.DOMAIN)
                         .replace(/{{ path }}/g, `/${process.env.PATH}/`)
                         .replace(/{{ uuid }}/g, emailVerify.uuid),
+                      `user created, sending email verification to ${email}`,
                     )
                     .then(() =>
                       resolve({
