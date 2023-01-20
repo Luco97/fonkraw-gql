@@ -119,3 +119,5 @@ const styles: string = `
     color: #fff;
   } */
   `;
+
+export const html_template_invite = '';
