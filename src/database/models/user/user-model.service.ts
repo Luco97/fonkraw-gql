@@ -106,15 +106,15 @@ export class UserModelService {
   manga_creator(parameters: {
     user_id: number;
     manga_id: number;
-  }): Promise<number> {
+  }): Promise<UserModel> {
     const { user_id, manga_id } = parameters;
     return this._userRepo
       .createQueryBuilder('user')
-      .leftJoin('user.author_profile', 'author_profile')
+      .leftJoinAndSelect('user.author_profile', 'author_profile')
       .leftJoin('author_profile.init_mangas', 'init_mangas')
       .where('init_mangas.id = :manga_id', { manga_id })
       .andWhere('user.id = :user_id', { user_id })
-      .getCount();
+      .getOne();
   }
 
   // Invite feature
