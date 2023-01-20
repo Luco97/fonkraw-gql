@@ -6,11 +6,13 @@ import { InviteModelService } from '@database/models/invite';
 import { UpdateOutput } from '../outputs/update.output';
 import { GetAllOutput } from '../outputs/get-all.output';
 import { SocketSubjectService } from './socket-subject.service';
+import { html_template_invite, MailService } from '@shared/mail';
 import { CreateInviteOutput } from '../outputs/create-invite.output';
 
 @Injectable()
 export class InviteService {
   constructor(
+    private _mailService: MailService,
     private _userService: UserModelService,
     private _inviteModel: InviteModelService,
     private _socketSubject: SocketSubjectService,
@@ -86,6 +88,13 @@ export class InviteService {
                 author_id: invite.to_author.id,
                 comment: invite.comment,
               });
+              this._mailService.sendMail(
+                author_exist.email,
+                `New invite from ${is_valid.author_profile.alias} !!!`,
+                html_template_invite,
+                `Valid invite from user author = ${is_valid.author_profile.alias} to user author = ${author_exist.author_profile.alias} in manga.id = ${manga_id}`,
+              );
+              // author_exist.email;
               resolver({
                 status: HttpStatus.CREATED,
                 message: `author ${invite.to_author.alias} invited succesfully`,
