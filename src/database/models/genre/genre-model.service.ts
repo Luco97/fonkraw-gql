@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GenreModel } from './genre.model';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 
 @Injectable()
 export class GenreModelService {
@@ -34,5 +34,9 @@ export class GenreModelService {
       .createQueryBuilder('genre')
       .where('genre.id IN (:...genres_id)', { genres_id })
       .getMany();
+  }
+
+  update(id: number, description: string): Promise<UpdateResult> {
+    return this._genreRepo.update({ id }, { description });
   }
 }
