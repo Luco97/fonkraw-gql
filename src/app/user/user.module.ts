@@ -26,7 +26,11 @@ import { InviteService } from './invite/services/invite.service';
 import { InviteGateway } from './invite/gateway/invite.gateway';
 import { SocketSubjectService } from './invite/services/socket-subject.service';
 
+// Controller
+import { UserController } from './user/controllers/user.controller';
+
 @Module({
+  controllers: [UserController],
   imports: [
     MailModule,
     AuthModule,
