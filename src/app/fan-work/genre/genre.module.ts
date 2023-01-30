@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 
 // Modules
+import { AuthModule } from '@shared/auth';
+import { RoleModelModule } from '@database/models/role';
 import { GenreModelModule } from '@database/models/genre';
 
 // Resolvers
@@ -8,7 +10,7 @@ import { ReadResolver } from './resolvers/read.resolver';
 import { UpdateResolver } from './resolvers/update.resolver';
 
 @Module({
-  imports: [GenreModelModule],
+  imports: [GenreModelModule, RoleModelModule, AuthModule],
   providers: [ReadResolver, UpdateResolver],
 })
 export class GenreModule {}
