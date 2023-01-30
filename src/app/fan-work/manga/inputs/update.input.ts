@@ -1,7 +1,6 @@
-import { GenreModel } from '@database/models/genre';
 import { Field, InputType } from '@nestjs/graphql';
 
-@InputType()
+@InputType('update_manga_genres')
 export class UpdateGenresInput {
   @Field(() => Number)
   manga_id: number;
@@ -13,7 +12,7 @@ export class UpdateGenresInput {
   drop_genres: number[];
 }
 
-@InputType()
+@InputType('update_manga_status')
 export class UpdateStatusInput {
   @Field(() => Number)
   manga_id: number;

@@ -1,6 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 
-@InputType()
+@InputType('create_invite')
 export class CreateInviteInput {
   @Field(() => Number, { nullable: false })
   to_author_id: number;
