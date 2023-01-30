@@ -197,7 +197,7 @@ type create_manga_output {
   manga: MangaModel
 }
 
-type UpdateOutput {
+type update_genre {
   """message for extra info"""
   message: String
 
@@ -219,6 +219,17 @@ type find_all_genres {
   extra: String
   genres: [GenreModel!]!
   count: Float!
+}
+
+type UpdateOutput {
+  """message for extra info"""
+  message: String
+
+  """status response"""
+  status: Float
+
+  """extra info, anything or json object"""
+  extra: String
 }
 
 type read_all_authors {
@@ -389,13 +400,14 @@ type Mutation {
   register_user(user: register_user!): RegisterOutput!
   invites_from_manga(manga_id: Float!): GetAllOutput!
   update_invite(update_invite: update_invite!): update_invite_output!
-  create_invite(parameters: CreateInviteInput!): CreateInviteOutput!
-  create(author: CreateInput): create_author_output!
-  delete(manga_id: Float!): UpdateOutput!
-  update_status(manga_id: UpdateStatusInput!): UpdateOutput!
-  update_highlight(manga_id: UpdateStatusInput!): UpdateOutput!
-  update_genres(parameters: UpdateGenresInput!): UpdateOutput!
-  update(author: UpdateInput): response!
+  create_invite(parameters: create_invite!): CreateInviteOutput!
+  create(author: create_author_input): create_author_output!
+  delete(manga_id: Float!): update_genre!
+  update_status(manga_id: update_manga_status!): update_genre!
+  update_highlight(manga_id: update_manga_status!): update_genre!
+  update_genres(parameters: update_manga_genres!): update_genre!
+  update_genre_description(params: update_genre_description!): UpdateOutput!
+  update(author: update_author_description): response!
   create_comment(parameters: create_comment!): CreateOutput!
   delete_comment(parameters: Float!): DeleteOutput!
 }
@@ -437,29 +449,34 @@ input update_invite {
   accept: Boolean!
 }
 
-input CreateInviteInput {
+input create_invite {
   to_author_id: Float!
   manga_id: Float!
   comment: String
 }
 
-input CreateInput {
+input create_author_input {
   alias: String!
   description: String = ""
 }
 
-input UpdateStatusInput {
+input update_manga_status {
   manga_id: Float!
   status: Boolean!
 }
 
-input UpdateGenresInput {
+input update_manga_genres {
   manga_id: Float!
   add_genres: [Float!]!
   drop_genres: [Float!]!
 }
 
-input UpdateInput {
+input update_genre_description {
+  genre_id: Float!
+  new_description: String!
+}
+
+input update_author_description {
   description: String!
 }
 
