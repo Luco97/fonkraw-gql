@@ -62,6 +62,27 @@ export class UserModelService {
     return this._userRepo.save({ id: user_id, password });
   }
 
+  find_all(parameters: {
+    take: number;
+    skip: number;
+    name: string;
+  }): Promise<[UserModel[], number]> {
+    const { name, skip, take } = parameters;
+
+    return this._userRepo
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.role', 'role')
+      .leftJoinAndSelect('user.activation', 'activation')
+      .leftJoinAndSelect('user.author_profile', 'author_profile')
+      .where('LOWER(user.username) like :name', {
+        name: `${name.toLocaleLowerCase()}%`,
+      })
+      .take(take || 10)
+      .skip(skip || 0)
+      .orderBy('user.username', 'ASC')
+      .getManyAndCount();
+  }
+
   find_one(parameters: { email: string; username: string }): Promise<number> {
     const { email, username } = parameters;
     return this._userRepo
