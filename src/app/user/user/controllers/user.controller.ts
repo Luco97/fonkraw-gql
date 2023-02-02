@@ -2,24 +2,26 @@ import {
   Res,
   Body,
   Post,
+  Param,
   UseGuards,
   Controller,
   SetMetadata,
-  Param,
   ParseIntPipe,
 } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 import {
-  IsNumber,
-  IsOptional,
-  IsString,
-  MaxLength,
   Min,
+  IsUUID,
+  IsString,
+  IsNumber,
+  MaxLength,
+  IsOptional,
 } from 'class-validator';
 import { Response } from 'express';
 
 import { RoleGuard } from '@guard/role.guard';
 import { UserModelService } from '@database/models/user';
-import { HttpStatus } from '@nestjs/common';
+import { RoleModelService } from '@database/models/role';
 
 class FindClass {
   @IsOptional()
@@ -37,9 +39,17 @@ class FindClass {
   name: string;
 }
 
+class UpdateRole {
+  @IsUUID()
+  role_id: string;
+}
+
 @Controller('user')
 export class UserController {
-  constructor(private _userModel: UserModelService) {}
+  constructor(
+    private _userModel: UserModelService,
+    private _roleModel: RoleModelService,
+  ) {}
 
   @Post()
   @SetMetadata('roles', ['master'])
@@ -59,7 +69,22 @@ export class UserController {
   @UseGuards(RoleGuard)
   update_role(
     @Param('id', ParseIntPipe) user_id: number,
-    @Body() find_body,
+    @Body() find_body: UpdateRole,
     @Res() resp: Response,
-  ) {}
+  ) {
+    const { role_id } = find_body;
+
+    Promise.all([
+      this._roleModel.find_one(role_id),
+      this._userModel.find_one_by_id(user_id),
+    ]).then(([rol, user]) => {
+      if (!rol || !user)
+        resp
+          .status(HttpStatus.NOT_FOUND)
+          .json({ message: `role doesn't exist` });
+      else {
+        this._userModel.update_user_role({ user_id, uuid: role_id });
+      }
+    });
+  }
 }
