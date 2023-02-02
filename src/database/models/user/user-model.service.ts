@@ -62,6 +62,14 @@ export class UserModelService {
     return this._userRepo.save({ id: user_id, password });
   }
 
+  update_user_role(parameters: {
+    user_id: number;
+    uuid: string;
+  }): Promise<UserModel> {
+    const { user_id, uuid } = parameters;
+    return this._userRepo.save({ id: user_id, role: { uuid } });
+  }
+
   find_all(parameters: {
     take: number;
     skip: number;
