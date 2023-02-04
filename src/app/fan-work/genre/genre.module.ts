@@ -9,8 +9,11 @@ import { GenreModelModule } from '@database/models/genre';
 import { ReadResolver } from './resolvers/read.resolver';
 import { UpdateResolver } from './resolvers/update.resolver';
 
+// Service
+import { GenreService } from './service/genre.service';
+
 @Module({
   imports: [GenreModelModule, RoleModelModule, AuthModule],
-  providers: [ReadResolver, UpdateResolver],
+  providers: [ReadResolver, UpdateResolver, GenreService],
 })
 export class GenreModule {}
