@@ -1,13 +1,14 @@
-import { GenreModelService } from '@database/models/genre';
+import { UseGuards, SetMetadata } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { UseGuards, HttpStatus, SetMetadata } from '@nestjs/common';
+
+import { RoleGuard } from '@guard/role.guard';
 import { UpdateInput } from '../inputs/update.input';
 import { UpdateOutput } from '../outputs/update.output';
-import { RoleGuard } from '@guard/role.guard';
+import { GenreService } from '../service/genre.service';
 
 @Resolver()
 export class UpdateResolver {
-  constructor(private _genreModel: GenreModelService) {}
+  constructor(private _genreService: GenreService) {}
 
   @Mutation(() => UpdateOutput)
   @SetMetadata('roles', ['admin'])
@@ -17,21 +18,6 @@ export class UpdateResolver {
   ): Promise<UpdateOutput> {
     const { genre_id, new_description } = updateInput;
 
-    return new Promise<UpdateOutput>((resolve, reject) =>
-      this._genreModel.find_one(genre_id).then((genre) => {
-        if (!genre)
-          resolve({
-            message: `genre with id = ${genre_id} not exist`,
-            status: HttpStatus.OK,
-          });
-        else
-          this._genreModel.update(genre_id, new_description).then(() =>
-            resolve({
-              message: `genre with id = ${genre_id} update`,
-              status: HttpStatus.OK,
-            }),
-          );
-      }),
-    );
+    return this._genreService.update_description({ genre_id, new_description });
   }
 }
