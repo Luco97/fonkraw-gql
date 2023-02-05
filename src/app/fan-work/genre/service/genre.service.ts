@@ -1,10 +1,25 @@
-import { GenreModelService } from '@database/models/genre';
 import { HttpStatus, Injectable } from '@nestjs/common';
+
+import { ReadOutput } from '../outputs/read.output';
 import { UpdateOutput } from '../outputs/update.output';
+import { GenreModelService } from '@database/models/genre';
 
 @Injectable()
 export class GenreService {
   constructor(private _genreModel: GenreModelService) {}
+
+  find_all() {
+    return new Promise<ReadOutput>((resolve, reject) => {
+      this._genreModel.find_all().then(([genres, count]) =>
+        resolve({
+          genres,
+          count,
+          status: HttpStatus.OK,
+          message: `total genres found: ${count}`,
+        }),
+      );
+    });
+  }
 
   update_description(parameters: {
     genre_id: number;
