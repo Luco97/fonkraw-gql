@@ -20,9 +20,3 @@ export class UpdateStatusInput {
   @Field(() => Boolean)
   status: boolean;
 }
-
-@InputType()
-export class UpdateInput {
-  @Field(() => Number)
-  manga_id: number;
-}
