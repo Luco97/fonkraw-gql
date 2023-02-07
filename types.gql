@@ -309,10 +309,10 @@ type read_all_languages {
 type Query {
   get_all_invites: GetAllOutput!
   find_all_manga(options: read_all_mangas = {take: 10, skip: 0, orderBy: "created_at", order: "ASC", search: ""}): read_all_manga!
-  find_editables(options: ReadEditablesInput = {take: 10, skip: 0, orderBy: "created_at", order: "ASC"}): [read_all_manga!]!
+  find_editables(options: read_editables_input = {take: 10, skip: 0, orderBy: "created_at", order: "ASC"}): [read_all_manga!]!
   find_one(manga_id: Float!): read_one_manga!
-  find_favorites(options: ReadFavoritesInput = {take: 10, skip: 0, orderBy: "created_at", order: "ASC"}): [read_all_manga!]!
-  related_mangas(parameters: ReadRelatedInput!): read_all_manga!
+  find_favorites(options: read_favorites_input = {take: 10, skip: 0, orderBy: "created_at", order: "ASC"}): [read_all_manga!]!
+  related_mangas(parameters: read_related_input!): read_all_manga!
   find_all_genres: find_all_genres!
   find_all_authors(options: find_all_authors = {take: 10, skip: 0, orderBy: "created_at", order: "ASC", alias: ""}): read_all_authors!
   find_one_author(author_id: Float!): read_all_authors!
@@ -335,7 +335,7 @@ input read_all_mangas {
   search: String = ""
 }
 
-input ReadEditablesInput {
+input read_editables_input {
   """quantity of items"""
   take: Float = 10
 
@@ -349,7 +349,7 @@ input ReadEditablesInput {
   order: String = "ASC"
 }
 
-input ReadFavoritesInput {
+input read_favorites_input {
   """quantity of items"""
   take: Float = 10
 
@@ -365,7 +365,7 @@ input ReadFavoritesInput {
   username: String = ""
 }
 
-input ReadRelatedInput {
+input read_related_input {
   author_id: Float
   author_alias: String!
 }
@@ -394,8 +394,8 @@ input read_all_comments {
 
 type Mutation {
   update_user_info(update_info: update_user_info_input!): update_user_info_output!
-  confirm_password(update_pass: UpdatePasswordInput!): Boolean!
-  update_password(update_pass: UpdatePasswordInput!): RegisterOutput!
+  confirm_password(update_pass: update_password_input!): Boolean!
+  update_password(update_pass: update_password_input!): RegisterOutput!
   sign_in(credentials: sign_in!): SignInOutput!
   register_user(user: register_user!): RegisterOutput!
   invites_from_manga(manga_id: Float!): GetAllOutput!
@@ -418,7 +418,7 @@ input update_user_info_input {
   description: String
 }
 
-input UpdatePasswordInput {
+input update_password_input {
   """password for the user"""
   password: String!
 }
