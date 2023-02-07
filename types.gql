@@ -270,7 +270,7 @@ type ReadAllOutput {
   count: Float!
 }
 
-type CreateOutput {
+type create_comment_output {
   """message for extra info"""
   message: String
 
@@ -282,7 +282,7 @@ type CreateOutput {
   comment: CommentModel
 }
 
-type DeleteOutput {
+type delete_comment_output {
   """message for extra info"""
   message: String
 
@@ -408,8 +408,8 @@ type Mutation {
   update_genres(parameters: update_manga_genres!): update_genre!
   update_genre_description(params: update_genre_description!): UpdateOutput!
   update(author: update_author_description): response!
-  create_comment(parameters: create_comment!): CreateOutput!
-  delete_comment(parameters: Float!): DeleteOutput!
+  create_comment(parameters: create_comment!): create_comment_output!
+  delete_comment(parameters: Float!): delete_comment_output!
 }
 
 """update user input"""
