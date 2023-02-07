@@ -11,7 +11,7 @@ export class ReadAllOutput extends response {
   @Field(() => Number)
   count: number;
 }
-@ObjectType()
+@ObjectType('read_one_author_output')
 export class ReadOneOutput extends response {
   @Field(() => AuthorModel, { nullable: true })
   author: AuthorModel;
