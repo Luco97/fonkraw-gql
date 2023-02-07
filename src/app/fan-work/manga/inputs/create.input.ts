@@ -1,7 +1,7 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { IsAlphanumeric, IsUrl } from 'class-validator';
 
-@InputType()
+@InputType('create_manga_input')
 export class CreateInput {
   @Field(() => String)
   @IsAlphanumeric()
