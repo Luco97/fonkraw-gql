@@ -112,7 +112,7 @@ type RegisterOutput {
 }
 
 """output object in sign in mutation"""
-type SignInOutput {
+type sign_output {
   """message for extra info"""
   message: String
 
@@ -124,7 +124,7 @@ type SignInOutput {
   token: String
 }
 
-type GetAllOutput {
+type all_invites_output {
   """message for extra info"""
   message: String
 
@@ -148,7 +148,7 @@ type update_invite_output {
   extra: String
 }
 
-type CreateInviteOutput {
+type create_invite_output {
   """message for extra info"""
   message: String
 
@@ -307,7 +307,7 @@ type read_all_languages {
 }
 
 type Query {
-  get_all_invites: GetAllOutput!
+  get_all_invites: all_invites_output!
   find_all_manga(options: read_all_mangas = {take: 10, skip: 0, orderBy: "created_at", order: "ASC", search: ""}): read_all_manga!
   find_editables(options: read_editables_input = {take: 10, skip: 0, orderBy: "created_at", order: "ASC"}): [read_all_manga!]!
   find_one(manga_id: Float!): read_one_manga!
@@ -396,11 +396,11 @@ type Mutation {
   update_user_info(update_info: update_user_info_input!): update_user_info_output!
   confirm_password(update_pass: update_password_input!): Boolean!
   update_password(update_pass: update_password_input!): RegisterOutput!
-  sign_in(credentials: sign_in!): SignInOutput!
+  sign_in(credentials: sign_in!): sign_output!
   register_user(user: register_user!): RegisterOutput!
-  invites_from_manga(manga_id: Float!): GetAllOutput!
+  invites_from_manga(manga_id: Float!): all_invites_output!
   update_invite(update_invite: update_invite!): update_invite_output!
-  create_invite(parameters: create_invite!): CreateInviteOutput!
+  create_invite(parameters: create_invite!): create_invite_output!
   create(author: create_author_input): create_author_output!
   delete(manga_id: Float!): update_manga!
   update_status(manga_id: update_manga_status!): update_manga!
