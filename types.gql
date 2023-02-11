@@ -100,7 +100,7 @@ type update_user_info_output {
 }
 
 """output object of register_user"""
-type RegisterOutput {
+type register_output {
   """message for extra info"""
   message: String
 
@@ -395,9 +395,9 @@ input read_all_comments {
 type Mutation {
   update_user_info(update_info: update_user_info_input!): update_user_info_output!
   confirm_password(update_pass: update_password_input!): Boolean!
-  update_password(update_pass: update_password_input!): RegisterOutput!
+  update_password(update_pass: update_password_input!): register_output!
   sign_in(credentials: sign_in!): sign_output!
-  register_user(user: register_user!): RegisterOutput!
+  register_user(user: register_user!): register_output!
   invites_from_manga(manga_id: Float!): all_invites_output!
   update_invite(update_invite: update_invite!): update_invite_output!
   create_invite(parameters: create_invite!): create_invite_output!
